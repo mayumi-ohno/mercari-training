@@ -40,11 +40,7 @@ public class ShowListController {
 
 	@ModelAttribute
 	public SearchForm setUpForm() {
-		SearchForm searchForm = new SearchForm();
-		if (session.getAttribute("searchValue") != null) {
-			searchForm = (SearchForm) session.getAttribute("searchValue");
-		}
-		return searchForm;
+		return  new SearchForm();
 	}
 
 	/**

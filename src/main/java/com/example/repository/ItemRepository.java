@@ -202,4 +202,18 @@ public class ItemRepository {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
 	}
+
+	/**
+	 * 商品情報を追加する.
+	 * 
+	 * @param item 商品情報
+	 */
+	public void insert(Item item) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO items (id,name,condition,category,brand,price,description) ");
+		sql.append(
+				"VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId,:brand,:price,:description);");
+		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+		template.update(sql.toString(), param);
+	}
 }

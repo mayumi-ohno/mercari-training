@@ -56,6 +56,13 @@ public class EditController {
 		return "edit";
 	}
 
+	/**
+	 * 商品情報を更新する.
+	 * 
+	 * @param form   入力情報
+	 * @param result 入力チェク
+	 * @return 詳細画面へのリダイレクト
+	 */
 	@RequestMapping("/input")
 	public String updateDetail(@Validated EditItemDetailForm form, BindingResult result) {
 		if (result.hasErrors()) {
@@ -65,6 +72,11 @@ public class EditController {
 		return "redirect:/edit/to-detail";
 	}
 
+	/**
+	 * 詳細画面へ遷移する.
+	 * 
+	 * @return 商品詳細画面
+	 */
 	@RequestMapping("/to-detail")
 	public String toDetailPage() {
 		return "forward:/detail";
