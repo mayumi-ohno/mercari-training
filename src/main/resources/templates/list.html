@@ -102,7 +102,7 @@
         </thead>
         <tbody>
           <tr th:each="item:${items}">
-            <td class="item-name"><a href="./detail.html" th:text="${item.name}">Razer BlackWidow Chroma Keyboard</a></td>
+            <td class="item-name"><a href="./detail.html" th:href="@{'/detail?itemId=' + ${item.id}}" th:text="${item.name}">Razer BlackWidow Chroma Keyboard</a></td>
             <td class="item-price" th:text="${item.price}">52.0</td>
             <td class="item-category">
             	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId}}" th:text="${item.parentCategory}">Electronics</a> / 

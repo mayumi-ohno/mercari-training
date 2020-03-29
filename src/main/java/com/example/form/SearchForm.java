@@ -24,7 +24,11 @@ public class SearchForm {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if ("null".equals(name)) {
+			this.name = null;
+		} else {
+			this.name = name;
+		}
 	}
 
 	public String getParentCategoryId() {
@@ -56,7 +60,11 @@ public class SearchForm {
 	}
 
 	public void setBrand(String brand) {
-		this.brand = brand;
+		if ("null".equals(brand)) {
+			this.brand = null;
+		} else {
+			this.brand = brand;
+		}
 	}
 
 	@Override

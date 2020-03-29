@@ -161,4 +161,30 @@ public class ItemRepository {
 		return dataSize;
 	}
 
+	/**
+	 * 商品IDで商品情報を検索・取得する.
+	 * 
+	 * @param itemId 商品ID
+	 * @return 商品情報
+	 */
+	public Item findByItemId(Integer itemId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
+		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
+		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
+		sql.append("A.brand, A.price, A.shipping, A.description ");
+		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
+		sql.append("ON A.category=B.id ");
+		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
+		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append("WHERE A.id=:itemId;");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("itemId", itemId);
+		Item item;
+		try {
+			item = template.queryForObject(sql.toString(), param, ROW_MAPPER);
+		} catch (Exception e) {
+			return null;
+		}
+		return item;
+	}
 }
