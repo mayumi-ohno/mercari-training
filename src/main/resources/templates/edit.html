@@ -50,19 +50,12 @@
     <!-- edit form -->
     <form action="#" method="POST" class="form-horizontal" th:action="@{/edit/input}" th:object="${editItemDetailForm}">
         <!-- error message -->
-          <div style="color: red" th:errors="*{name}">Error</div>
-          <div style="color: red" th:errors="*{price}">Error</div>
-          <div style="color: red" th:errors="*{parentCategoryId}">Error</div>
-          <div style="color: red" th:errors="*{childCategoryId}">Error</div>
-          <div style="color: red" th:errors="*{grandChildCategoryId}">Error</div>
-          <div style="color: red" th:errors="*{brand}">Error</div>
-          <div style="color: red" th:errors="*{condition}">Error</div>
-          <div style="color: red" th:errors="*{description}">Error</div>
         <!-- name -->
         <div class="form-group">
           <label for="inputName" class="col-sm-2 control-label">name</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="inputName" th:field="*{name}"/>
+            <span class="text-danger" style="color: red" th:errors="*{name}">Error</span>
           </div>
         </div>
         <!-- price -->
@@ -70,6 +63,7 @@
           <label for="price" class="col-sm-2 control-label">price</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="price" th:field="*{price}"/>
+            <span class="text-danger" style="color: red" th:errors="*{price}">Error</span>
           </div>
         </div>
         <!-- category -->
@@ -80,6 +74,7 @@
               <option value="">- parentCategory -</option>
               <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
             </select>
+            <span class="text-danger" style="color: red" th:errors="*{parentCategoryId}">Error</span>
           </div>
         </div>
         <div class="form-group">
@@ -89,6 +84,7 @@
               <option value="">- childCategory -</option>
               <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}">parentCategory1</option>
             </select>
+            <span class="text-danger"  style="color: red" th:errors="*{childCategoryId}">Error</span>
           </div>
         </div>
         <div class="form-group">
@@ -98,6 +94,7 @@
               <option value="">- grandChild -</option>
               <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}">parentCategory1</option>
             </select>
+            <span class="text-danger"  style="color: red" th:errors="*{grandChildCategoryId}">Error</span>
           </div>
         </div>
         <!-- brand -->
@@ -105,6 +102,7 @@
           <label for="brand" class="col-sm-2 control-label">brand</label>
           <div class="col-sm-8">
             <input type="text" id="brand" class="form-control" name="brand" th:field="*{brand}"/>
+            <span class="text-danger"  style="color: red" th:errors="*{brand}">Error</span>
           </div>
         </div>
         <!-- condition -->
@@ -127,6 +125,7 @@
           <label for="description" class="col-sm-2 control-label" >description</label>
           <div class="col-sm-8">
             <textarea th:field="*{description}" name="description" id="description" class="form-control" rows="5"></textarea>
+            <span class="text-danger"  style="color: red" th:errors="*{description}">Error</span>
           </div>
         </div>
         <!-- submit button -->
