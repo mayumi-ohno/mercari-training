@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,9 @@ public class ShowDetailController {
 	@Autowired
 	private ShowDetailService showDetailService;
 
+	@Autowired
+	private HttpSession session;
+
 	/**
 	 * 商品詳細を表示する.
 	 * 
@@ -30,8 +35,20 @@ public class ShowDetailController {
 	 */
 	@RequestMapping("")
 	public String showDetail(String itemId, Model model) {
-		Item item = showDetailService.showDetail(Integer.parseInt(itemId));
-		model.addAttribute("item", item);
+		String url = (String) session.getAttribute("referer");
+		session.removeAttribute("referer");
+
+		if (itemId == null) {
+			Item item = (Item) session.getAttribute("item");
+			itemId = String.valueOf(item.getId());
+		}
+
+		// 編集ページから遷移してきた場合、商品詳細情報をセッション格納済
+		if (!"http://localhost:8080/edit".equals(url)) {
+			Item item = showDetailService.showDetail(Integer.parseInt(itemId));
+			session.setAttribute("item", item);
+		}
+
 		return "detail";
 	}
 
