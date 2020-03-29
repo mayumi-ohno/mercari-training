@@ -23,7 +23,7 @@ public class UserRepository {
 	private NamedParameterJdbcTemplate template;
 
 	/** ユーザー情報を生成するローマッパー */
-	private RowMapper<User> ROW_MAPPER = (rs, i) -> {
+	private final static RowMapper<User> ROW_MAPPER = (rs, i) -> {
 		User user = new User();
 		user.setEmail(rs.getString("name"));
 		user.setPassword(rs.getString("password"));
