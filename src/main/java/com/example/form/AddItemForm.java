@@ -2,7 +2,6 @@ package com.example.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 /**
  * 新規商品を表すフォーム.

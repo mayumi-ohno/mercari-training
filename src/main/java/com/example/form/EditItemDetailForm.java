@@ -14,34 +14,27 @@ public class EditItemDetailForm {
 	/** 商品ID */
 	private String id;
 	/** 商品名 */
-	@NotBlank(message = "Enter name")
+	@NotBlank(message = "error:may not be empty")
 	private String name;
 	/** コンディション */
+	@NotBlank(message = "error:may not be empty")
 	private String condition;
-	/** 孫カテゴリID */
-	@Size(min = 1, message = "Select a category")
-	private String grandChildCategoryId;
-	/** 孫カテゴリ */
-	private String grandChildCategory;
-	/** 子カテゴリID */
-	@Size(min = 1, message = "Select a category")
-	private String childCategoryId;
-	/** 子カテゴリ */
-	private String childCategory;
 	/** 親カテゴリID */
-	@Size(min = 1, message = "Select a category")
+	@Size(min = 1, message = "error:may not be empty")
 	private String parentCategoryId;
-	/** 親カテゴリ */
-	private String parentCategory;
+	/** 子カテゴリID */
+	@Size(min = 1, message = "error:may not be empty")
+	private String childCategoryId;
+	/** 孫カテゴリID */
+	@Size(min = 1, message = "error:may not be empty")
+	private String grandChildCategoryId;
 	/** ブランド名 */
 	private String brand;
 	/** 価格 */
-	@Pattern(regexp = "^([1-9]\\d*|0)(\\.\\d+)?$", message = "Enter Decimal or Integer in price field")
+	@Pattern(regexp = "^([1-9]\\d*|0)(\\.\\d+)?$", message = "error:enter Decimal or Integer in price field")
 	private String price;
-	/** 出荷状況 */
-	private String shipping;
 	/** 商品説明 */
-	@NotBlank(message = "Enter description")
+	@NotBlank(message = "error:may not be empty")
 	private String description;
 
 	public String getId() {
@@ -57,11 +50,7 @@ public class EditItemDetailForm {
 	}
 
 	public void setName(String name) {
-		if ("null".equals(name)) {
-			this.name = null;
-		} else {
-			this.name = name;
-		}
+		this.name = name;
 	}
 
 	public String getCondition() {
@@ -72,38 +61,6 @@ public class EditItemDetailForm {
 		this.condition = condition;
 	}
 
-	public String getGrandChildCategoryId() {
-		return grandChildCategoryId;
-	}
-
-	public void setGrandChildCategoryId(String grandChildCategoryId) {
-		this.grandChildCategoryId = grandChildCategoryId;
-	}
-
-	public String getGrandChildCategory() {
-		return grandChildCategory;
-	}
-
-	public void setGrandChildCategory(String grandChildCategory) {
-		this.grandChildCategory = grandChildCategory;
-	}
-
-	public String getChildCategoryId() {
-		return childCategoryId;
-	}
-
-	public void setChildCategoryId(String childCategoryId) {
-		this.childCategoryId = childCategoryId;
-	}
-
-	public String getChildCategory() {
-		return childCategory;
-	}
-
-	public void setChildCategory(String childCategory) {
-		this.childCategory = childCategory;
-	}
-
 	public String getParentCategoryId() {
 		return parentCategoryId;
 	}
@@ -112,12 +69,28 @@ public class EditItemDetailForm {
 		this.parentCategoryId = parentCategoryId;
 	}
 
-	public String getParentCategory() {
-		return parentCategory;
+	public String getChildCategoryId() {
+		return childCategoryId;
 	}
 
-	public void setParentCategory(String parentCategory) {
-		this.parentCategory = parentCategory;
+	public void setChildCategoryId(String childCategoryId) {
+		if ("".equals(this.parentCategoryId)) {
+			this.childCategoryId = "";
+		} else {
+			this.childCategoryId = childCategoryId;
+		}
+	}
+
+	public String getGrandChildCategoryId() {
+		return grandChildCategoryId;
+	}
+
+	public void setGrandChildCategoryId(String grandChildCategoryId) {
+		if ("".equals(this.parentCategoryId) || "".equals(this.childCategoryId)) {
+			this.grandChildCategoryId = "";
+		} else {
+			this.grandChildCategoryId = grandChildCategoryId;
+		}
 	}
 
 	public String getBrand() {
@@ -125,11 +98,7 @@ public class EditItemDetailForm {
 	}
 
 	public void setBrand(String brand) {
-		if ("null".equals(brand)) {
-			this.brand = null;
-		} else {
-			this.brand = brand;
-		}
+		this.brand = brand;
 	}
 
 	public String getPrice() {
@@ -138,14 +107,6 @@ public class EditItemDetailForm {
 
 	public void setPrice(String price) {
 		this.price = price;
-	}
-
-	public String getShipping() {
-		return shipping;
-	}
-
-	public void setShipping(String shipping) {
-		this.shipping = shipping;
 	}
 
 	public String getDescription() {
@@ -158,11 +119,10 @@ public class EditItemDetailForm {
 
 	@Override
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", grandChildCategoryId="
-				+ grandChildCategoryId + ", grandChildCategory=" + grandChildCategory + ", childCategoryId="
-				+ childCategoryId + ", childCategory=" + childCategory + ", parentCategoryId=" + parentCategoryId
-				+ ", parentCategory=" + parentCategory + ", brand=" + brand + ", price=" + price + ", shipping="
-				+ shipping + ", description=" + description + "]";
+		return "EditItemDetailForm [id=" + id + ", name=" + name + ", condition=" + condition
+				+ ", grandChildCategoryId=" + grandChildCategoryId + ", childCategoryId=" + childCategoryId
+				+ ", parentCategoryId=" + parentCategoryId + ", brand=" + brand + ", price=" + price + ", description="
+				+ description + "]";
 	}
 
 }

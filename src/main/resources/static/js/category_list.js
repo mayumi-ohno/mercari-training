@@ -9,6 +9,13 @@ $(function() {
 	// 親カテゴリ未選択の場合、子・孫カテゴリをdisabledにする
 	changeStatusOfChildCategories(); 
 	changeStatusOfGrandChildCategories();
+	if ($parentCatogories.val() == "") {
+		$grandChildCtegories.val("");
+		$childCtegories.val("");
+	}
+	if ($childCtegories.val() == "") {
+		$grandChildCtegories.val("");
+	}
 	
 	// -------親カテゴリ変更時------------------------------------------------------------------------------------
 	$parentCatogories.change(function() {
@@ -28,8 +35,8 @@ $(function() {
 		});
 
 		changeStatusOfChildCategories();
+		$grandChildCtegories.attr('disabled', 'disabled');
 		$childCtegories.val("");
-		changeStatusOfGrandChildCategories();
 		$grandChildCtegories.val("");
 });
 	
@@ -63,10 +70,12 @@ $(function() {
 			}
 		}
 		function changeStatusOfGrandChildCategories() {
-			if ($childCtegories.val() == "") {
+			if ($childCtegories.val() == "" || $parentCatogories.val() == "") {
 				$grandChildCtegories.attr('disabled', 'disabled');
 			} else {
 				$grandChildCtegories.removeAttr('disabled');
 			}
 		}
 });
+
+// 参考URL: https://try-m.co.jp/blog/web-create/936/

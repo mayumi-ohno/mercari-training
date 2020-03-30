@@ -43,7 +43,7 @@ public class ShowDetailController {
 			itemId = String.valueOf(item.getId());
 		}
 
-		// 編集ページから遷移してきた場合、商品詳細情報をセッション格納済
+		// 編集ページ上の"back"ボタンから遷移してきた場合、商品詳細情報をセッション格納済
 		if (!"http://localhost:8080/edit".equals(url)) {
 			Item item = showDetailService.showDetail(Integer.parseInt(itemId));
 			session.setAttribute("item", item);

@@ -91,7 +91,6 @@ public class EditController {
 	@RequestMapping("/referer")
 	public String createReferer(HttpServletRequest request) {
 		session.setAttribute("referer", request.getHeader("REFERER"));
-		System.out.println(session.getAttribute("referer").toString());
 		return "forward:/detail";
 	}
 
