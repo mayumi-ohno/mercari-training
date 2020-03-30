@@ -18,17 +18,15 @@ public class AddItemForm {
 	@NotBlank(message = "error:may not be empty")
 	private String condition;
 	/** 孫カテゴリID */
-	@Size(min = 1, message = "error:may not be empty")
+	@NotBlank(message = "error:may not be empty")
 	private String grandChildCategoryId;
 	/** 孫カテゴリ */
 	private String grandChildCategory;
 	/** 子カテゴリID */
-	@Size(min = 1, message = "error:may not be empty")
 	private String childCategoryId;
 	/** 子カテゴリ */
 	private String childCategory;
 	/** 親カテゴリID */
-	@Size(min = 1, message = "error:may not be empty")
 	private String parentCategoryId;
 	/** 親カテゴリ */
 	private String parentCategory;

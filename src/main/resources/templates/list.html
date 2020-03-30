@@ -62,11 +62,11 @@
           </select>
           <select class="form-control" name="childCategoryId">
             <option value="">- childCategory -</option>
-            <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}">parentCategory1</option>
+            <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
           </select>
           <select class="form-control" name="grandChildCategoryId">
             <option value="">- grandChild -</option>
-            <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}">parentCategory1</option>
+            <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}" th:data-val="${grandChildCategory.parent}">parentCategory1</option>
           </select>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
@@ -106,8 +106,8 @@
             <td class="item-price" th:text="${item.price}">52.0</td>
             <td class="item-category">
             	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId}}" th:text="${item.parentCategory}">Electronics</a> / 
-            	<a href="" th:href="@{'/items?childCategoryId=' + ${item.childCategoryId}}" th:text="${item.childCategory}">Computers &amp; Tablets</a> / 
-            	<a href="" th:href="@{'/items?grandChildCategoryId=' + ${item.grandChildCategoryId}}" th:text="${item.grandChildCategory}">Components &amp; Parts</a>
+            	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId}}" th:text="${item.childCategory}">Computers &amp; Tablets</a> / 
+            	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId} +'&grandChildCategoryId=' + ${item.grandChildCategoryId}}" th:text="${item.grandChildCategory}">Components &amp; Parts</a>
             </td>
             <td class="item-brand"><a href="" th:href="@{'/items?brand=' + ${item.brand}}" th:text="${item.brand}">Razer</a></td>
             <td class="item-condition" th:text="${item.condition}">3</td>
@@ -142,5 +142,6 @@
       </div>
     </div>
   </div>
+ <script th:src="@{/js/category_list.js}" src="../static/js/category_list.js"></script>
 </body>
 </html>

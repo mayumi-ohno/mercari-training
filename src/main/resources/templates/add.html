@@ -81,7 +81,7 @@
           <div class="col-sm-8">
             <select class="form-control" name="childCategoryId">
               <option value="">- childCategory -</option>
-              <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}">parentCategory1</option>
+              <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
             </select>
           </div>
         </div>
@@ -90,7 +90,7 @@
           <div class="col-sm-8">
             <select class="form-control" name="grandChildCategoryId">
               <option value="">- grandChild -</option>
-              <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}">parentCategory1</option>
+			  <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}" th:data-val="${grandChildCategory.parent}">parentCategory1</option>
             </select>
           </div>
         </div>
@@ -145,5 +145,6 @@
       </div>
     </form>
   </div>
+  <script th:src="@{/js/category_list.js}" src="../static/js/category_list.js"></script>
 </body>
 </html>
