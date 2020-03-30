@@ -2,6 +2,7 @@ package com.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,11 +47,18 @@ public class RegisterUserController {
 	 * @return ログインページへのリダイレクト（不正入力時はユーザー登録ページ）
 	 */
 	@RequestMapping("/input")
-	public String inputData(@Validated RegisterUserForm form, BindingResult result) {
+	public String inputData(@Validated RegisterUserForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return "register";
 		}
-		registerUserService.register(form);
+
+		boolean successedRegistration = registerUserService.register(form);
+
+		if (!successedRegistration) {
+			model.addAttribute("emailDuplication", "error:this email-address is already registered");
+			return "register";
+		}
+
 		return "redirect:/register/to-login";
 	}
 

@@ -35,12 +35,17 @@ public class UserRepository {
 	 * メールアドレスからユーザー情報を検索する.
 	 * 
 	 * @param email メールアドレス
-	 * @return ユーザー情報
+	 * @return ユーザー情報(該当なしの場合null)
 	 */
 	public User findByEmail(String email) {
 		String sql = "SELECT name, password, authority FROM users WHERE name=:email;";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
-		User user = template.queryForObject(sql, param, ROW_MAPPER);
+		User user;
+		try {
+			user = template.queryForObject(sql, param, ROW_MAPPER);
+		} catch (Exception e) {
+			return null;
+		}
 		return user;
 	}
 
@@ -50,9 +55,13 @@ public class UserRepository {
 	 * @param user ユーザー情報
 	 */
 	public void insert(User user) {
-		String sql = "INSERT INTO users (name, password, authority) VALUES(:email,:password,:authority);";
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO users (name, password) ");
+		sql.append("SELECT :email, :password ");
+		sql.append("WHERE NOT EXISTS (SELECT name FROM users WHERE name=:email);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
-		template.update(sql, param);
+		template.update(sql.toString(), param);
+
 	}
 
 }

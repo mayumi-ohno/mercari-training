@@ -30,7 +30,7 @@ public class LoginController {
 	 * @param model リクエストスコープ
 	 * @return ログインページ
 	 */
-	@RequestMapping("/login_error")
+	@RequestMapping("/login-error")
 	public String loginError(Model model) {
 		model.addAttribute("loginError", "error:failed to login");
 		return "login";

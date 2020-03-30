@@ -22,7 +22,7 @@
 <body>
   <!-- navbar -->
   <nav class="navbar navbar-inverse">
-    <a class="navbar-brand" href="./list.html">Rakus Items</a>
+    <a class="navbar-brand" href="./list.html" th:href="@{/}">Rakus Items</a>
   </nav>
 
   <!-- register form -->
@@ -33,6 +33,7 @@
         <form action="#" method="POST" th:action="@{/register/input}" th:object="${registerUserForm}">
           <div class="form-group">
           <div style="color: red" th:errors="*{email}">Error</div>
+          <div style="color: red" th:if="${emailDuplication}" th:text="${emailDuplication}">Error</div>
             <label for="mail">mail address</label>
             <input type="email" class="form-control" id="mail" th:field="*{email}" name="email">
           </div>
@@ -45,7 +46,6 @@
         </form>
       </div>
     </div>
-    <div>
       <a type="button" class="btn btn-default" href="./login.html" th:href="@{/}"><i class="fa fa-reply"></i>&nbsp;Login page</a>
     </div>
 </body>

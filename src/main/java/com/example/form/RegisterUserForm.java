@@ -12,11 +12,11 @@ import javax.validation.constraints.NotBlank;
 public class RegisterUserForm {
 
 	/** メールアドレス */
-	@NotBlank(message = "メールアドレスを入力してください")
-	@Email(message = "メールアドレスの形式が不正です")
+	@NotBlank(message = "error:may not be empty")
+	@Email(message = "error:invalid format")
 	private String email;
 	/** パスワード */
-	@NotBlank(message = "パスワードを入力してください")
+	@NotBlank(message = "error:may not be empty")
 	private String password;
 
 	public String getEmail() {
