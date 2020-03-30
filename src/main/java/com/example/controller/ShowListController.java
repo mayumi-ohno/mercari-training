@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.domain.LoginUser;
 import com.example.form.SearchForm;
 import com.example.service.CategoryService;
 import com.example.service.ShowListService;
@@ -40,7 +42,7 @@ public class ShowListController {
 
 	@ModelAttribute
 	public SearchForm setUpForm() {
-		return  new SearchForm();
+		return new SearchForm();
 	}
 
 	/**
@@ -49,7 +51,9 @@ public class ShowListController {
 	 * @return 商品一覧ページ
 	 */
 	@RequestMapping("")
-	public String index(SearchForm form, Integer page, Model model) {
+	public String index(SearchForm form, Integer page, Model model, @AuthenticationPrincipal LoginUser loginUser) {
+
+		session.setAttribute("loginUser", loginUser.getUser()); // ログイン情報を格納
 
 		// カテゴリリスト(検索用)作成
 		if (session.getAttribute("parentCategoryList") == null) {
