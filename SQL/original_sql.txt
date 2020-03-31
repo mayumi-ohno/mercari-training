@@ -1,0 +1,21 @@
+-- originalテーブル作成
+create table original (
+  id integer not null
+  , name character varying(255)
+  , condition_id integer
+  , category_name character varying(255)
+  , brand character varying(255)
+  , price double precision
+  , shipping integer
+  , description text
+  , constraint original_PKC primary key (id)
+) ;
+
+create index brand_index
+  on original(brand);
+
+create unique index original_pki
+  on original(id);
+
+-- C:ドライブ直下の.tsvファイルからデータインポート
+COPY original FROM 'C:\train.tsv' CSV DELIMITER E'\t' HEADER;

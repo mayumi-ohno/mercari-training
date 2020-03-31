@@ -1,0 +1,11 @@
+-- users
+create table users (
+  id serial not null
+  , name varchar(255)
+  , password varchar(255)
+  , authority integer
+  , constraint users_PKC primary key (id)
+) ;
+
+create unique index users_pki
+  on users(id);

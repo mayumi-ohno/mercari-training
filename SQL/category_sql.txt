@@ -1,0 +1,56 @@
+-- categoryテーブル作成
+create table category (
+   id serial not null
+  , parent integer
+  , name character varying(255)
+  ,name_all character varying(255)
+  , constraint category_PKC primary key (id)
+) ;
+
+create unique index category_pki
+  on category(id);
+
+create index parent_id_index
+  on category(parent);
+
+-- -- categoryテーブルへのデータ挿入
+-- 第1階層
+INSERT INTO category (name)
+SELECT DISTINCT A.category_name
+ FROM
+ (SELECT SPLIT_PART(category_name, '/',1) AS category_name
+  FROM original
+  WHERE category_name IS NOT NULL)AS A;
+-- 第2階層
+INSERT INTO category (parent, name)
+SELECT DISTINCT B.id, A.category_name
+ FROM
+  (SELECT
+    SPLIT_PART(category_name, '/',2) AS category_name,
+    SPLIT_PART(category_name, '/',1) AS parent_name
+   FROM original
+   WHERE category_name IS NOT NULL
+  ) AS A
+ LEFT OUTER JOIN
+  (SELECT id, name FROM category) AS B
+ ON A.parent_name=B.name;
+-- 第3階層
+INSERT INTO category (parent, name, name_all)
+SELECT DISTINCT B.id, A.category_name, A.name_all
+ FROM
+  (SELECT
+    SPLIT_PART(category_name, '/',3) AS category_name,
+    SPLIT_PART(category_name, '/',1)||'/'||SPLIT_PART(category_name, '/',2) AS parent_name,
+    SPLIT_PART(category_name, '/',1)||'/'||SPLIT_PART(category_name, '/',2)||'/'||SPLIT_PART(category_name, '/',3) AS name_all
+   FROM original
+   WHERE category_name IS NOT NULL
+  ) AS A
+ LEFT OUTER JOIN
+  (SELECT B.id, A.name ||'/'|| B.name AS joined_name 
+   FROM
+    (SELECT id, name FROM category WHERE parent IS NULL) AS A
+   LEFT OUTER JOIN
+    (SELECT id, parent, name FROM category WHERE parent IS NOT NULL) AS B
+   ON A.id=B.parent
+   ) AS B
+  ON A.parent_name=B.joined_name;

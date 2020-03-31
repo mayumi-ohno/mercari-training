@@ -1,0 +1,46 @@
+-- itemsテーブル作成
+create table items (
+  id serial not null
+  , name character varying(255)
+  , condition integer
+  , category integer
+  , brand character varying(255)
+  , price double precision
+  , shipping integer
+  , description text
+  , constraint items_PKC primary key (id)
+) ;
+
+-- データ挿入
+INSERT INTO items (id, name, condition, category, brand, price, shipping, description)
+SELECT A.id, A.name, A.condition_id, B.id, A.brand, A.price, A.shipping, A.description
+ FROM
+  (SELECT
+    id, name, condition_id, brand, price, shipping, description,
+    SPLIT_PART(category_name, '/',1)||'/'||SPLIT_PART(category_name, '/',2)||'/'||SPLIT_PART(category_name, '/',3) AS category
+   FROM original) AS A
+ LEFT OUTER JOIN
+  category AS B
+ ON A.category=B.name_all;
+
+-- 挿入結果確認
+select
+split_part(c.name_all, '/', 1)
+,count(*)
+from items i
+left join category c on c.id = i.category
+group by split_part(c.name_all, '/', 1);
+
+-- 以下のとおり出力されればOK！
+-- "Beauty"			"207828"
+-- "Electronics"			"122690"
+-- "Handmade"			"30842"
+-- "Home"				"67871"
+-- "Kids"				"171689"
+-- "Men"				"93680"
+-- "Other"				"45351"
+-- "Sports & Outdoors"		"25342"
+-- "Vintage & Collectibles"	"46530"
+-- "Women"				"664385"
+-- null				"6327"
+
