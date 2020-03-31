@@ -1,0 +1,12 @@
+-- brand
+create table brand (
+  id serial not null
+  , name varchar(255)
+  , constraint brand_PKC primary key (id)
+) ;
+
+create unique index brand_pki
+  on brand(id);
+
+-- ブランド追加
+INSERT INTO brand (name) SELECT DISTINCT brand FROM original WHERE brand IS NOT NULL;

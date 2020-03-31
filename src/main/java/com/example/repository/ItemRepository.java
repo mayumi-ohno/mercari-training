@@ -109,6 +109,7 @@ public class ItemRepository {
 		sql.append("ON A.category=B.id ");
 		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
 		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append("LEFT OUTER JOIN brand AS E ON A.brand=E.id ");
 		sql.append("WHERE A.id IS NOT NULL ");
 		sql.append(commonPartOfSqlForFuzzySearch(item));
 		sql.append(";");
@@ -148,9 +149,12 @@ public class ItemRepository {
 	 */
 	public void update(Item item) {
 		StringBuilder sql = new StringBuilder();
+		sql.append("WITH brand_name AS (");
 		sql.append("UPDATE items SET name=:name, price=:price, condition=:condition, ");
 		sql.append("category=:grandChildCategoryId, brand=:brand, description=:description ");
-		sql.append("WHERE id=:id;");
+		sql.append("WHERE id=:id RETURNING brand) ");
+		sql.append("INSERT INTO brand (name) SELECT brand FROM brand_name ");
+		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
 	}
@@ -162,9 +166,11 @@ public class ItemRepository {
 	 */
 	public void insert(Item item) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO items (id,name,condition,category,brand,price,description) ");
-		sql.append(
-				"VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId,:brand,:price,:description);");
+		sql.append("WITH brand_name AS (INSERT INTO items (id,name,condition,category,brand,price,description) ");
+		sql.append("VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId, ");
+		sql.append(":brand,:price,:description) RETURNING brand) ");
+		sql.append("INSERT INTO brand (name) SELECT brand FROM brand_name ");
+		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
 	}
@@ -179,11 +185,12 @@ public class ItemRepository {
 		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
 		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
 		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("A.brand, A.price, A.shipping, A.description ");
+		sql.append("E.name AS brand, A.price, A.shipping, A.description ");
 		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
 		sql.append("ON A.category=B.id ");
 		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
 		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append("LEFT OUTER JOIN brand AS E ON A.brand=E.id ");
 		return sql;
 	}
 
@@ -199,7 +206,7 @@ public class ItemRepository {
 			sql.append("AND A.name ILIKE :name ");
 		}
 		if (item.getBrand() != null) {
-			sql.append("AND A.brand ILIKE :brand ");
+			sql.append("AND E.name ILIKE :brand ");
 		}
 		if (item.getParentCategoryId() != null) {
 			sql.append("AND D.id =:parentCategoryId ");

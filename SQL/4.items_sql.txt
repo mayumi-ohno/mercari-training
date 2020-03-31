@@ -4,24 +4,26 @@ create table items (
   , name character varying(255)
   , condition integer
   , category integer
-  , brand character varying(255)
+  , brand integer
   , price double precision
   , shipping integer
   , description text
+  , image text
   , constraint items_PKC primary key (id)
 ) ;
 
 -- データ挿入
 INSERT INTO items (id, name, condition, category, brand, price, shipping, description)
-SELECT A.id, A.name, A.condition_id, B.id, A.brand, A.price, A.shipping, A.description
+SELECT A.id, A.name, A.condition_id, C.id, B.id, A.price, A.shipping, A.description
  FROM
   (SELECT
     id, name, condition_id, brand, price, shipping, description,
     SPLIT_PART(category_name, '/',1)||'/'||SPLIT_PART(category_name, '/',2)||'/'||SPLIT_PART(category_name, '/',3) AS category
-   FROM original) AS A
- LEFT OUTER JOIN
-  category AS B
- ON A.category=B.name_all;
+   FROM original )AS A
+   LEFT OUTER JOIN brand AS B
+   ON A.brand=B.name
+   LEFT OUTER JOIN category AS C
+   ON A.category=C.name_all;
 
 -- 挿入結果確認
 select
