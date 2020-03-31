@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.form.RegisterUserForm;
 import com.example.service.RegisterUserService;
@@ -47,7 +48,8 @@ public class RegisterUserController {
 	 * @return ログインページへのリダイレクト（不正入力時はユーザー登録ページ）
 	 */
 	@RequestMapping("/input")
-	public String inputData(@Validated RegisterUserForm form, BindingResult result, Model model) {
+	public String inputData(@Validated RegisterUserForm form, BindingResult result, Model model,
+			RedirectAttributes flash) {
 		if (result.hasErrors()) {
 			return "register";
 		}
@@ -59,11 +61,18 @@ public class RegisterUserController {
 			return "register";
 		}
 
+		flash.addFlashAttribute("completionOfRegistration", "completed registration !!");
+
 		return "redirect:/register/to-login";
 	}
 
+	/**
+	 * ログインページを表示する.
+	 * 
+	 * @return ログインページ
+	 */
 	@RequestMapping("/to-login")
 	public String toLogin() {
-		return "forward:/";
+		return "login";
 	}
 }

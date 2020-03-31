@@ -30,6 +30,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">Login</div>
       <div class="panel-body">
+        <p class="text-danger" th:if="${completionOfRegistration}" th:text="${completionOfRegistration}"></p>
         <p class="text-danger" th:if="${loginError}" th:text="${loginError}">error:failed to login</p>
         <form action="#" method="POST" th:action="@{/login}">
           <div class="form-group">
