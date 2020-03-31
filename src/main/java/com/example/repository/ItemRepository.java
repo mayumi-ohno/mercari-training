@@ -24,6 +24,7 @@ public class ItemRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 
+	/** 商品情報を生成するローマッパー */
 	private final static RowMapper<Item> ROW_MAPPER = (rs, i) -> {
 		Item item = new Item();
 		item.setId(rs.getInt("id"));
@@ -51,14 +52,7 @@ public class ItemRepository {
 	 */
 	public List<Item> findByIndex(Integer viewSize, Integer index) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
-		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
-		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("A.brand, A.price, A.shipping, A.description ");
-		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
-		sql.append("ON A.category=B.id ");
-		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
-		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append(commonPartOfSql());
 		sql.append("ORDER BY A.name ");
 		sql.append("LIMIT :viewSize OFFSET :index;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("viewSize", viewSize).addValue("index", index);
@@ -76,30 +70,9 @@ public class ItemRepository {
 	 */
 	public List<Item> fuzzySearch(Item item, Integer viewSize, Integer index) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
-		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
-		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("A.brand, A.price, A.shipping, A.description ");
-		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
-		sql.append("ON A.category=B.id ");
-		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
-		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append(commonPartOfSql());
 		sql.append("WHERE A.id IS NOT NULL ");
-		if (item.getName() != null) {
-			sql.append("AND A.name LIKE :name ");
-		}
-		if (item.getBrand() != null) {
-			sql.append("AND A.brand LIKE :brand ");
-		}
-		if (item.getParentCategoryId() != null) {
-			sql.append("AND D.id =:parentCategoryId ");
-		}
-		if (item.getChildCategoryId() != null) {
-			sql.append("AND C.id =:childCategoryId ");
-		}
-		if (item.getGrandChildCategoryId() != null) {
-			sql.append("AND B.id =:grandChildCategoryId ");
-		}
+		sql.append(commonPartOfSqlForFuzzySearch(item));
 		sql.append("ORDER BY A.name ");
 		sql.append("LIMIT :viewSize OFFSET :index;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("parentCategoryId", item.getParentCategoryId())
@@ -137,21 +110,7 @@ public class ItemRepository {
 		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
 		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
 		sql.append("WHERE A.id IS NOT NULL ");
-		if (item.getName() != null) {
-			sql.append("AND A.name LIKE :name ");
-		}
-		if (item.getBrand() != null) {
-			sql.append("AND A.brand LIKE :brand ");
-		}
-		if (item.getParentCategoryId() != null) {
-			sql.append("AND D.id =:parentCategoryId ");
-		}
-		if (item.getChildCategoryId() != null) {
-			sql.append("AND C.id =:childCategoryId ");
-		}
-		if (item.getGrandChildCategoryId() != null) {
-			sql.append("AND B.id =:grandChildCategoryId ");
-		}
+		sql.append(commonPartOfSqlForFuzzySearch(item));
 		sql.append(";");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("parentCategoryId", item.getParentCategoryId())
 				.addValue("childCategoryId", item.getChildCategoryId())
@@ -170,14 +129,7 @@ public class ItemRepository {
 	 */
 	public Item findByItemId(Integer itemId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
-		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
-		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("A.brand, A.price, A.shipping, A.description ");
-		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
-		sql.append("ON A.category=B.id ");
-		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
-		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append(commonPartOfSql());
 		sql.append("WHERE A.id=:itemId;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("itemId", itemId);
 		Item item;
@@ -215,5 +167,49 @@ public class ItemRepository {
 				"VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId,:brand,:price,:description);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
+	}
+
+	/**
+	 * SQL文の共通部分を生成する.
+	 * 
+	 * @return SQL文（共通部分）
+	 */
+	public StringBuilder commonPartOfSql() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
+		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
+		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
+		sql.append("A.brand, A.price, A.shipping, A.description ");
+		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
+		sql.append("ON A.category=B.id ");
+		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
+		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		return sql;
+	}
+
+	/**
+	 * 曖昧検索用SQLの共通部分を生成する.
+	 * 
+	 * @param item 検索条件
+	 * @return SQL文（共通部分）
+	 */
+	public StringBuilder commonPartOfSqlForFuzzySearch(Item item) {
+		StringBuilder sql = new StringBuilder();
+		if (item.getName() != null) {
+			sql.append("AND A.name ILIKE :name ");
+		}
+		if (item.getBrand() != null) {
+			sql.append("AND A.brand ILIKE :brand ");
+		}
+		if (item.getParentCategoryId() != null) {
+			sql.append("AND D.id =:parentCategoryId ");
+		}
+		if (item.getChildCategoryId() != null) {
+			sql.append("AND C.id =:childCategoryId ");
+		}
+		if (item.getGrandChildCategoryId() != null) {
+			sql.append("AND B.id =:grandChildCategoryId ");
+		}
+		return sql;
 	}
 }
