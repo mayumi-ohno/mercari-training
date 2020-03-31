@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.domain.Item;
 import com.example.form.EditItemDetailForm;
@@ -64,22 +65,13 @@ public class EditController {
 	 * @return 詳細画面へのリダイレクト
 	 */
 	@RequestMapping("/input")
-	public String updateDetail(@Validated EditItemDetailForm form, BindingResult result) {
+	public String updateDetail(@Validated EditItemDetailForm form, BindingResult result, RedirectAttributes flash) {
 		if (result.hasErrors()) {
 			return "edit";
 		}
 		editDetailService.edit(form);
-		return "redirect:/edit/to-detail";
-	}
-
-	/**
-	 * 詳細画面へ遷移する.
-	 * 
-	 * @return 商品詳細画面
-	 */
-	@RequestMapping("/to-detail")
-	public String toDetailPage() {
-		return "forward:/detail";
+		flash.addFlashAttribute("completionOfEditing", "Editing completed!!");
+		return "redirect:/detail";
 	}
 
 	/**

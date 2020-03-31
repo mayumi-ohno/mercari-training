@@ -61,7 +61,7 @@ public class RegisterUserController {
 			return "register";
 		}
 
-		flash.addFlashAttribute("completionOfRegistration", "completed registration !!");
+		flash.addFlashAttribute("completionOfRegistration", "completed registration!!");
 
 		return "redirect:/register/to-login";
 	}

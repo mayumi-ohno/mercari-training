@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.form.AddItemForm;
 import com.example.service.AddItemService;
@@ -39,29 +40,20 @@ public class AddItemController {
 	}
 
 	/**
-	 * 商品情報を更新する.
+	 * 商品を追加する.
 	 * 
 	 * @param form   入力情報
 	 * @param result 入力チェク
 	 * @return 詳細画面へのリダイレクト
 	 */
 	@RequestMapping("/input")
-	public String insert(@Validated AddItemForm form, BindingResult result) {
+	public String insert(@Validated AddItemForm form, BindingResult result, RedirectAttributes flash) {
 		if (result.hasErrors()) {
 			return "add";
 		}
 		addItemService.addItem(form);
-		return "redirect:/add/to-list";
-	}
-
-	/**
-	 * 商品一覧画面へ遷移する.
-	 * 
-	 * @return 商品一覧画面
-	 */
-	@RequestMapping("/to-list")
-	public String toListPage() {
-		return "forward:/items";
+		flash.addFlashAttribute("completionOfAddition", "Addition completed!!");
+		return "redirect:/items";
 	}
 
 }

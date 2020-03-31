@@ -36,7 +36,7 @@
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
-		  <span id="loginName" th:text="${session.loginUser.email}">userName</span>
+		  <span id="loginName" th:text="'user: '+${session.loginUser.email}">userName</span>
         </p>
       </div>
     </div>
@@ -87,6 +87,8 @@
         </ul>
       </nav>
     </div>
+
+	 <h3 class="text-danger" th:if="${completionOfAddition}" th:text="${completionOfAddition}"></h3>
 
     <!-- table -->
     <div class="table-responsive">
