@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- css -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" 
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="./mercari.css"/>
+  <!-- script -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <title>Rakus Items</title>
+</head>
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="./list.html" th:href="@{/items}">Rakus Items</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
+        </ul>
+        <p class="navbar-text navbar-right">
+		  <span id="loginName" th:text="'user: '+${session.loginUser.email}">userName</span>
+        </p>
+      </div>
+    </div>
+  </nav>
+
+  <div id="main" class="container-fluid">
+    <a type="button" class="btn btn-default" href="./admin_page.html" th:href="@{/category}"><i class="fa fa-reply"></i> back</a>
+    <br>
+    <br>
+    <h2>Add New Category</h2>
+    <h3 class="text-danger" th:if="${AdditionCompleted}" th:text="${AdditionCompleted}"></h3>
+<!--     add parent -->
+      <a class="btn btn-default" id="addParentCategory"><i class="fa fa-plus-square-o"></i> Parent Category</a>
+        <form action="" class="form-inline" role="form" th:action="@{/category/add-parent}"  th:object="${editCategoryForm}" method="post" style="display: inline">
+        <div class="form-group" id="formsForAddParent">
+          <input type="text" class="form-control" th:field="*{parentCategoryName}" name="parentCategoryName" placeholder="new parentCategory" id="addParentCategory"/>
+         <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
+        <div style="color: red" th:if="${parentError}" th:text="${parentError}" id="parentError">Error</div>
+        </div>
+    </form>
+    <br>
+    <br>
+<!--     add child -->
+      <a class="btn btn-default" id="addChildCategory"><i class="fa fa-plus-square-o"></i> Child Category</a>
+        <form action="" class="form-inline" role="form" th:action="@{/category/add-child}" th:object="${editCategoryForm}" method="post" style="display: inline">
+        <div class="form-group" id="formsForAddChild">
+          <select class="form-control" name="parentCategoryId">
+            <option value="">- parentCategory -</option>
+            <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
+          </select>
+          <input type="text" class="form-control" name="childCategoryName" placeholder="childCategory" th:field="*{childCategoryName}"/>
+         <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
+        <div style="color: red" th:if="${parentIsBlank}" th:text="${parentIsBlank}" id="parentIsBlank">Error</div>
+        <div style="color: red" th:if="${childError}" th:text="${childError}" id="childError">Error</div>
+        </div>
+    </form>
+    <br>
+    <br>
+<!--     add grandChild -->
+      <a class="btn btn-default" id="addGrandChildCategory"><i class="fa fa-plus-square-o"></i> GrandChild Category</a>
+        <form action="" class="form-inline" role="form" th:action="@{/category/add-grandchild}" th:object="${editCategoryForm}" method="post" style="display: inline">
+        <div class="form-group" id="formsForAddGrandChild">
+          <select class="form-control" name="parentCategoryId" id="selectParent">
+            <option value="">- parentCategory -</option>
+            <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
+          </select>
+          <select class="form-control" name="childCategoryId" id="selectChild">
+            <option value="">- childCategory -</option>
+            <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
+          </select>
+          <input type="text" class="form-control" name="grandChildCategoryName" th:field="*{grandChildCategoryName}" placeholder="grandChildCategory"/>
+         <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
+        </div>
+        <div style="color: red" th:if="${childIsBlank}" th:text="${childIsBlank}" id="childIsBlank">Error</div>
+        <div style="color: red" th:if="${grandChildError}" th:text="${grandChildError}" id="grandChildError">Error</div>
+    </form>
+    
+  </div>
+ <script th:src="@{/js/add_category.js}" src="../static/js/add_category.js"></script>
+</body>
+</html>

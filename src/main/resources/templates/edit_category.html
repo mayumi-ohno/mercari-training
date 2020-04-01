@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- css -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" 
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="./mercari.css"/>
+  <!-- script -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <title>Rakus Items</title>
+</head>
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="./list.html" th:href="@{/items}">Rakus Items</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
+        </ul>
+        <p class="navbar-text navbar-right">
+		  <span id="loginName" th:text="'user: '+${session.loginUser.email}">userName</span>
+        </p>
+      </div>
+    </div>
+  </nav>
+
+  <div id="main" class="container-fluid">
+    <a type="button" class="btn btn-default" href="./admin_page.html" th:href="@{/admin}"><i class="fa fa-reply"></i> back</a>
+    <br>
+    <br>
+  <h2>Edit Existing Category</h2>
+  <h3 class="text-danger" th:if="${editionCompleted}" th:text="${editionCompleted}"></h3>
+    <!-- 検索フォーム -->
+    <div id="forms">
+      <form action="" class="form-inline" role="form" th:action="@{/category/edit-or-delete}" th:object="${editCategoryForm}" method="post">
+        <div class="form-group">
+          <select class="form-control" name="parentCategoryId" id="existingParentCategory">
+            <option value="">- parentCategory -</option>
+            <option  value="1" th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
+          </select>
+          <select class="form-control" name="childCategoryId" id="existingChildCategory">
+            <option value="">- childCategory -</option>
+            <option  value="1" data-val="1" th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
+          </select>
+          <select class="form-control" name="grandChildCategoryId" id="existingGrandChildCategory">
+            <option value="">- grandChild -</option>
+            <option value="1" data-val="1" th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}" th:data-val="${grandChildCategory.parent}">parentCategory1</option>
+          </select>
+        </div>
+        <div class="form-group"></div>
+        <button type="button" class="btn btn-default" id="showEditForm">edit</button>
+        <button type="submit" class="btn btn-default" id="deleteButton" name="deleteFlag" value="true"  onclick="return confirm('本当に削除しますか？')">delete</button>
+        <br>
+        <br>
+        <div th:unless="${editError}" id="editMessage" style="color:red">Correct names of selected category</div>
+        <div style="color: red" th:if="${editError}" th:text="${editError}" id="edieError">Error</div>
+        <input type="text" class="form-control" th:field="*{parentCategoryName}" name="parentCategoryName" placeholder="parentCategory" id="editParentCategory"/>
+        <input type="text" class="form-control" th:field="*{childCategoryName}" name="childCategoryName" placeholder="childCategory" id="editChildCategory"/>
+        <input type="text" class="form-control" th:field="*{grandChildCategoryName}" name="grandChildCategoryName" placeholder="grandChildCategory" id="editGrandChildCategory"/>
+        <button type="submit" class="btn btn-default" id="editButton" name="deleteFlag" value="false"  onclick="return confirm('内容に間違いありませんか？')"><i class="fa fa-angle-double-right"></i> submit</button>
+        <button type="button" class="btn btn-default" id="cancel">cancel</button>
+      </form>
+    </div>
+    <br>
+	<!--     add category link -->
+      <a class="btn btn-default" id="addParentCategory" th:href="@{/category/add}"><i class="fa fa-plus-square-o"></i> Add New Category</a>
+  </div>
+ <script th:src="@{/js/category_list.js}" src="../static/js/category_list.js"></script>
+ <script th:src="@{/js/edit_category.js}" src="../static/js/edit_category.js"></script>
+</body>
+</html>

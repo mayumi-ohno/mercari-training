@@ -39,7 +39,7 @@ public class CategoryService {
 	public List<Category> createParentCategoryList(List<Category> categoryList) {
 		List<Category> parentCategoryList = new ArrayList<>();
 		for (Category category : categoryList) {
-			if (category.getParent() == 0 && category.getName_all() == null) {
+			if (category.getParent() == 0 && category.getNameAll() == null) {
 				parentCategoryList.add(category);
 			}
 		}
@@ -55,7 +55,7 @@ public class CategoryService {
 	public List<Category> createChildCategoryList(List<Category> categoryList) {
 		List<Category> childCategoryList = new ArrayList<>();
 		for (Category category : categoryList) {
-			if (category.getParent() != 0 && category.getName_all() == null) {
+			if (category.getParent() != 0 && category.getNameAll() == null) {
 				childCategoryList.add(category);
 			}
 		}
@@ -71,7 +71,7 @@ public class CategoryService {
 	public List<Category> createGrandChildCategoryList(List<Category> categoryList) {
 		List<Category> garandChildCategoryList = new ArrayList<>();
 		for (Category category : categoryList) {
-			if (category.getParent() != 0 && category.getName_all() != null) {
+			if (category.getParent() != 0 && category.getNameAll() != null) {
 				garandChildCategoryList.add(category);
 			}
 		}
