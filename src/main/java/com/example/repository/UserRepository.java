@@ -70,8 +70,13 @@ public class UserRepository {
 	 */
 	public void insert(User user) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO users (name, password) ");
-		sql.append("SELECT :email, :password ");
+		if(user.getAuthority()==null) {
+			sql.append("INSERT INTO users (name, password) ");
+			sql.append("SELECT :email, :password");
+		}else {
+			sql.append("INSERT INTO users (name, password, authority) ");
+			sql.append("SELECT :email, :password, :authority ");
+		}
 		sql.append("WHERE NOT EXISTS (SELECT name FROM users WHERE name=:email);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
 		template.update(sql.toString(), param);
@@ -86,6 +91,17 @@ public class UserRepository {
 	public void update(User user) {
 		String sql = "UPDATE users SET name=:email,authority=:authority WHERE id=:id;";
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
+		template.update(sql, param);
+	}
+
+	/**
+	 * 既存ユーザーを削除する.
+	 * 
+	 * @param userId ユーザーID
+	 */
+	public void delete(Integer userId) {
+		String sql = "DELETE FROM users WHERE id=:id;";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", userId);
 		template.update(sql, param);
 	}
 
