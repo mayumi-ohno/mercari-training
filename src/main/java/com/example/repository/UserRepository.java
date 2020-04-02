@@ -1,5 +1,7 @@
 package com.example.repository;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -25,11 +27,23 @@ public class UserRepository {
 	/** ユーザー情報を生成するローマッパー */
 	private final static RowMapper<User> ROW_MAPPER = (rs, i) -> {
 		User user = new User();
+		user.setId(rs.getInt("id"));
 		user.setEmail(rs.getString("name"));
 		user.setPassword(rs.getString("password"));
 		user.setAuthority(rs.getInt("authority"));
 		return user;
 	};
+
+	/**
+	 * 全ユーザー情報をid昇順で取得する.
+	 * 
+	 * @return 全ユーザー情報
+	 */
+	public List<User> findAll() {
+		String sql = "SELECT id, name, password, authority FROM users ORDER BY id;";
+		List<User> userList = template.query(sql, ROW_MAPPER);
+		return userList;
+	}
 
 	/**
 	 * メールアドレスからユーザー情報を検索する.
@@ -38,7 +52,7 @@ public class UserRepository {
 	 * @return ユーザー情報(該当なしの場合null)
 	 */
 	public User findByEmail(String email) {
-		String sql = "SELECT name, password, authority FROM users WHERE name=:email;";
+		String sql = "SELECT id, name, password, authority FROM users WHERE name=:email;";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
 		User user;
 		try {
@@ -62,6 +76,17 @@ public class UserRepository {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
 		template.update(sql.toString(), param);
 
+	}
+
+	/**
+	 * 既存ユーザー情報を更新する.
+	 * 
+	 * @param user ユーザー情報
+	 */
+	public void update(User user) {
+		String sql = "UPDATE users SET name=:email,authority=:authority WHERE id=:id;";
+		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
+		template.update(sql, param);
 	}
 
 }
