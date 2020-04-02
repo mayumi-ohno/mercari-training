@@ -4,6 +4,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * 商品詳細の更新情報を表すフォーム.
  * 
@@ -36,6 +38,8 @@ public class EditItemDetailForm {
 	/** 商品説明 */
 	@NotBlank(message = "error:may not be empty")
 	private String description;
+	/** 画像 */
+	private MultipartFile image;
 
 	public String getId() {
 		return id;
@@ -117,12 +121,20 @@ public class EditItemDetailForm {
 		this.description = description;
 	}
 
+	public MultipartFile getImage() {
+		return image;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
 	@Override
 	public String toString() {
-		return "EditItemDetailForm [id=" + id + ", name=" + name + ", condition=" + condition
-				+ ", grandChildCategoryId=" + grandChildCategoryId + ", childCategoryId=" + childCategoryId
-				+ ", parentCategoryId=" + parentCategoryId + ", brand=" + brand + ", price=" + price + ", description="
-				+ description + "]";
+		return "EditItemDetailForm [id=" + id + ", name=" + name + ", condition=" + condition + ", parentCategoryId="
+				+ parentCategoryId + ", childCategoryId=" + childCategoryId + ", grandChildCategoryId="
+				+ grandChildCategoryId + ", brand=" + brand + ", price=" + price + ", description=" + description
+				+ ", image=" + image + "]";
 	}
 
 }

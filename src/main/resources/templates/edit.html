@@ -48,7 +48,7 @@
     <h2>Edit</h2>
 
     <!-- edit form -->
-    <form action="#" method="POST" class="form-horizontal" th:action="@{/edit/input}" th:object="${editItemDetailForm}">
+    <form action="#" method="POST" class="form-horizontal" th:action="@{/edit/input}" th:object="${editItemDetailForm}" enctype="multipart/form-data">
         <!-- error message -->
         <!-- name -->
         <div class="form-group">
@@ -58,6 +58,16 @@
             <span class="text-danger" th:errors="*{name}">Error</span>
           </div>
         </div>
+      <!-- image -->
+      <div class="form-group">
+		<label class="col-sm-2 control-label">image ※jpg,png,gif</label>
+		<div>
+			<img th:src="${session.item.image}" height="100px">
+		</div>
+			<input type="file" id="image" name="image"  
+				accept=".gif,.jpg,.png,image/jpeg,image/png,image/gif" th:field="*{image}">
+          <span class="text-danger" th:errors="*{image}">error:may not be empty</span>
+	  </div>
         <!-- price -->
         <div class="form-group">
           <label for="price" class="col-sm-2 control-label">price</label>

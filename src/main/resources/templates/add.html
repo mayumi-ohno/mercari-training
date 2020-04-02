@@ -48,7 +48,7 @@
     <h2>Add</h2>
 
     <!-- add form -->
-    <form action="#" method="POST" class="form-horizontal" th:action="@{/add/input}" th:object="${addItemForm}">
+    <form action="#" method="POST" class="form-horizontal" th:action="@{/add/input}" th:object="${addItemForm}" enctype="multipart/form-data">
       <!-- name -->
       <div class="form-group">
         <label for="inputName" class="col-sm-2 control-label">name</label>
@@ -137,6 +137,13 @@
           <span class="text-danger" th:errors="*{description}">error:may not be empty</span>
         </div>
       </div>
+      <!-- image -->
+      <div class="form-group">
+		<label class="col-sm-2 control-label">image ※jpg,png,gif</label>
+			<input type="file" id="image" name="image"  
+				accept=".gif,.jpg,.png,image/jpeg,image/png,image/gif" th:field="*{image}">
+          <span class="text-danger" th:errors="*{image}">error:may not be empty</span>
+	  </div>
       <!-- submit button -->
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">

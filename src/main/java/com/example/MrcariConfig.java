@@ -57,8 +57,10 @@ public class MrcariConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().mvcMatchers("/", "/login-error", "/register", "/register/**").permitAll() // ログイン前にアクセス可とするパス群
-//				.anyRequest().authenticated().and()
+		http.authorizeRequests()
+		.mvcMatchers("/", "/login-error", "/register", "/register/**").permitAll() // ログイン前にアクセス可とするパス群
+				.anyRequest().authenticated().and()
+//				.anyRequest().permitAll().and()
 		; // 上記以外のパスは、ログイン以前のアクセス不可とする
 		// LOGIN
 		http.formLogin().loginPage("/") // ログイン画面を表示するパス

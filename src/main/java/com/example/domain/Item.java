@@ -34,6 +34,8 @@ public class Item {
 	private Integer shipping;
 	/** 商品説明 */
 	private String description;
+	/** 画像 */
+	private String image;
 
 	public Integer getId() {
 		return id;
@@ -147,13 +149,21 @@ public class Item {
 		this.description = description;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	@Override
 	public String toString() {
 		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", grandChildCategoryId="
 				+ grandChildCategoryId + ", grandChildCategory=" + grandChildCategory + ", childCategoryId="
 				+ childCategoryId + ", childCategory=" + childCategory + ", parentCategoryId=" + parentCategoryId
 				+ ", parentCategory=" + parentCategory + ", brand=" + brand + ", price=" + price + ", shipping="
-				+ shipping + ", description=" + description + "]";
+				+ shipping + ", description=" + description + ", image=" + image + "]";
 	}
 
 }

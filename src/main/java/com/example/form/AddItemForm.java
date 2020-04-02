@@ -3,6 +3,8 @@ package com.example.form;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * 新規商品を表すフォーム.
  * 
@@ -39,6 +41,8 @@ public class AddItemForm {
 	/** 商品説明 */
 	@NotBlank(message = "error:may not be empty")
 	private String description;
+	/** 画像 */
+	private MultipartFile image;
 
 	public String getName() {
 		return name;
@@ -144,13 +148,21 @@ public class AddItemForm {
 		this.description = description;
 	}
 
+	public MultipartFile getImage() {
+		return image;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
 	@Override
 	public String toString() {
-		return "Item [name=" + name + ", condition=" + condition + ", grandChildCategoryId=" + grandChildCategoryId
-				+ ", grandChildCategory=" + grandChildCategory + ", childCategoryId=" + childCategoryId
-				+ ", childCategory=" + childCategory + ", parentCategoryId=" + parentCategoryId + ", parentCategory="
-				+ parentCategory + ", brand=" + brand + ", price=" + price + ", shipping=" + shipping + ", description="
-				+ description + "]";
+		return "AddItemForm [name=" + name + ", condition=" + condition + ", grandChildCategoryId="
+				+ grandChildCategoryId + ", grandChildCategory=" + grandChildCategory + ", childCategoryId="
+				+ childCategoryId + ", childCategory=" + childCategory + ", parentCategoryId=" + parentCategoryId
+				+ ", parentCategory=" + parentCategory + ", brand=" + brand + ", price=" + price + ", shipping="
+				+ shipping + ", description=" + description + ", image=" + image + "]";
 	}
 
 }

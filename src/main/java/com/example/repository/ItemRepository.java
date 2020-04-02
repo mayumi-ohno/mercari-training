@@ -40,6 +40,7 @@ public class ItemRepository {
 		item.setPrice(rs.getDouble("price"));
 		item.setShipping(rs.getInt("shipping"));
 		item.setDescription(rs.getString("description"));
+		item.setImage(rs.getString("image"));
 		return item;
 	};
 
@@ -151,11 +152,16 @@ public class ItemRepository {
 		StringBuilder sql = new StringBuilder();
 		sql.append("WITH brand_name AS (");
 		sql.append("UPDATE items SET name=:name, price=:price, condition=:condition, ");
-		sql.append("category=:grandChildCategoryId, brand=:brand, description=:description ");
-		sql.append("WHERE id=:id RETURNING brand) ");
-		sql.append("INSERT INTO brand (name) SELECT brand FROM brand_name ");
+		sql.append("category=:grandChildCategoryId, description=:description, image=:image ");
+		sql.append("WHERE id=:id) ");
+		sql.append("INSERT INTO brand (name) SELECT :brand ");
 		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+		template.update(sql.toString(), param);
+		
+		sql= new StringBuilder();
+		sql.append("UPDATE items SET brand=(SELECT id FROM brand WHERE name=:brand) ");
+		sql.append("WHERE id=:id;");
 		template.update(sql.toString(), param);
 	}
 
@@ -166,11 +172,21 @@ public class ItemRepository {
 	 */
 	public void insert(Item item) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("WITH brand_name AS (INSERT INTO items (id,name,condition,category,brand,price,description) ");
-		sql.append("VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId, ");
-		sql.append(":brand,:price,:description) RETURNING brand) ");
-		sql.append("INSERT INTO brand (name) SELECT brand FROM brand_name ");
-		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand);");
+		sql.append("WITH brand_name AS (INSERT INTO items ");
+		if (item.getImage() == null || "".equals(item.getImage())) {
+			sql.append("(id,name,condition,category,price,description) ");
+			sql.append("VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId, ");
+			sql.append(":price,:description) ");
+		} else {
+			sql.append("(id,name,condition,category,price,description,image) ");
+			sql.append("VALUES((SELECT MAX(id)+1 FROM items),:name,:condition,:grandChildCategoryId,");
+			sql.append(":price,:description,:image) ");
+		}
+		sql.append("RETURNING id, brand) ");
+		sql.append(", insert_brand AS (INSERT INTO brand (name) SELECT brand FROM brand_name ");
+		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand)) ");
+		sql.append("UPDATE items SET brand=(SELECT id FROM brand WHERE name=:brand) ");
+		sql.append("WHERE id=(SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
 	}
@@ -185,7 +201,7 @@ public class ItemRepository {
 		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
 		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
 		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("E.name AS brand, A.price, A.shipping, A.description ");
+		sql.append("E.name AS brand, A.price, A.shipping, A.description, A.image ");
 		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
 		sql.append("ON A.category=B.id ");
 		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
@@ -205,7 +221,7 @@ public class ItemRepository {
 		if (item.getName() != null) {
 			sql.append("AND A.name ILIKE :name ");
 		}
-		if (item.getBrand() != null) {
+		if (item.getBrand() != null && !"".equals(item.getBrand())) {
 			sql.append("AND E.name ILIKE :brand ");
 		}
 		if (item.getParentCategoryId() != null) {
