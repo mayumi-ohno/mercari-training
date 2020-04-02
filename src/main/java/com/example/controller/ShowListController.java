@@ -67,8 +67,9 @@ public class ShowListController {
 		}
 
 		// 総ページ数算出
+		Integer totalPages = null;
 		if (page == null) {
-			int totalPages = showListService.calcPageNumber(VIEW_SIZE, form);
+			totalPages = showListService.calcPageNumber(VIEW_SIZE, form);
 			session.setAttribute("totalPages", totalPages);
 		}
 
@@ -76,6 +77,13 @@ public class ShowListController {
 		if (page == null) {
 			page = 1;
 		}
+
+		totalPages = (Integer) session.getAttribute("totalPages");
+		if (!(1 <= page && page <= totalPages)) {
+			model.addAttribute("pagerError", "error:enter numbers range 1-" + totalPages);
+			page = 1;
+		}
+
 		List<Item> items = showListService.searchItems(form, VIEW_SIZE, page);
 		model.addAttribute("items", items);
 

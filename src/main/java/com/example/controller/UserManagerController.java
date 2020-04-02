@@ -69,7 +69,7 @@ public class UserManagerController {
 		}
 
 		showAndEditUserService.updateUserInfo(form);
-		String message = "Editing Completed!! ( " + form.getId() + " )";
+		String message = "Editing Completed!! ( userId:" + form.getId() + " )";
 		flash.addFlashAttribute("editingCompleted", message);
 		return "redirect:/user";
 	}

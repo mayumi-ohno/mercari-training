@@ -1,0 +1,2 @@
+2020/04/03 12:26:17:933 INFO - UserRepository.update 【既存ユーザー更新】email:hogemi@hoge, authority:1
+2020/04/03 12:26:29:832 INFO - UserRepository.update 【既存ユーザー更新】email:test@test.co.jp, authority:2

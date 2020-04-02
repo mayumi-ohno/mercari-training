@@ -133,15 +133,16 @@
           <div class="form-group">
             <div class="input-group col-xs-6">
               <label></label>
-              <input type="text" class="form-control" name="page" th:value="${session.page}">
+              <input type="number" class="form-control" name="page" th:value="${session.page}" min="1" >
               <!-- 総ページ数 -->
               <div class="input-group-addon" th:text="'/ ' + ${session.totalPages}">/ 20</div>
             </div>
             <div class="input-group col-xs-1">
               <button type="submit" class="btn btn-default">Go</button>
-            </div>
+          </div>
           </div>
         </form>
+        <div th:if="${pagerError}" th:text="${pagerError}" style="color:red"></div>
       </div>
     </div>
   </div>
