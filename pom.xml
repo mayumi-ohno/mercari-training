@@ -68,8 +68,12 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
+		<!-- HTMLでログイン情報を取得する -->
+		<dependency>
+   			 <groupId>org.thymeleaf.extras</groupId>
+   		 	<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

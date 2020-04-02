@@ -103,17 +103,23 @@
     <div id="navbar" class="collapse navbar-collapse">
       <div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a id="logout" href="./admin.html" th:href="@{/admin}">Admin&nbsp;&#x2699;</a></li>
+		  <!-- 管理者の人だけ表示 -->
+		  <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
-		  <span id="loginName" th:text="'user: '+${session.loginUser.email}">userName</span>
+		  user: <span  sec:authentication="principal.user.email">userName</span>
         </p>
       </div>
     </div>
   </nav>
 
   <div id="main" class="container-fluid">
+     <a type="button" class="btn btn-default" href="./admin_page.html" th:href="@{/admin}"><i class="fa fa-reply"></i> back</a>
+    <br>
+    <br>
+    <br>
+    <br>
     <!-- ユーザー追加 -->
     <div>
       <a class="btn btn-default" id="addButton"><i class="fa fa-plus-square-o"></i> Add New User</a>
