@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -62,14 +63,36 @@ public class EditCategoriesController {
 	 */
 	@RequestMapping("/edit-or-delete")
 	public String editOrDelete(EditCategoryForm form, boolean deleteFlag, Model model, RedirectAttributes flash) {
+
+		// 削除処理ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+		Integer itemsBelongingToThisCategory = null;
+
+		if (deleteFlag) {
+			boolean existLowerHerarchty = checkLowerHerarchy(form, model);
+			if (existLowerHerarchty) {
+				model.addAttribute("deleteError",
+						"error: Cannot DELETE because Lower-Herarchy-Categories are existing");
+				return "edit_category";
+			}
+			itemsBelongingToThisCategory = editCategoryService.deleteCategory(form);
+		}
+
+		if (itemsBelongingToThisCategory != null && itemsBelongingToThisCategory > 0) {
+			model.addAttribute("deleteError", "error: Cannot DELETE because some items are belonging to this category");
+			return "edit_category";
+		}
+
+		if (itemsBelongingToThisCategory != null && itemsBelongingToThisCategory == 0) {
+			flash.addFlashAttribute("editionCompleted", "Delete Completed!!");
+			return "redirect:/category";
+		}
+
+		// 編集処理ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 		boolean editFormContainBlank = checkBlankInEditForm(form);
 		if (!deleteFlag && editFormContainBlank) {
 			model.addAttribute("editError", "error:may not be empty");
 			return "edit_category";
-		}
-
-		if (deleteFlag) {
-			return "redirect:/category";
 		}
 
 		boolean editionCompleted = editCategoryService.updateExistingCategory(form);
@@ -223,5 +246,43 @@ public class EditCategoriesController {
 		session.setAttribute("childCategoryList", childCategoryList);
 		List<Category> grandChildCategoryList = categoryService.createGrandChildCategoryList(categoryList);
 		session.setAttribute("grandChildCategoryList", grandChildCategoryList);
+	}
+
+	/**
+	 * 削除対象カテゴリに属する下層カテゴリの存在を確認する.
+	 * 
+	 * @param form 削除対象カテゴリ
+	 * @return 存在する:true, 存在しない:false
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/check-lower-herarchy")
+	public boolean checkLowerHerarchy(EditCategoryForm form, Model model) {
+		boolean existParentCategoryId = !"".equals(form.getParentCategoryId()) && form.getParentCategoryId() != null;
+		boolean existChildCategoryId = !"".equals(form.getChildCategoryId()) && form.getChildCategoryId() != null;
+		boolean existGrandChildCategoryId = !"".equals(form.getGrandChildCategoryId())
+				&& form.getGrandChildCategoryId() != null;
+		boolean existLowerHerarchy = false;
+
+		String categoryId = null;
+		List<Category> categoriesInLowerHerarchy = new ArrayList<>();
+		if (existGrandChildCategoryId) {
+			return false;
+		} else if (existChildCategoryId) {
+			categoryId = form.getChildCategoryId();
+			categoriesInLowerHerarchy = (List<Category>) session.getAttribute("grandChildCategoryList");
+		} else if (existParentCategoryId) {
+			categoryId = form.getParentCategoryId();
+			categoriesInLowerHerarchy = (List<Category>) session.getAttribute("childCategoryList");
+		}
+
+		for (Category category : categoriesInLowerHerarchy) {
+			String parentId = String.valueOf(category.getParent());
+			if (parentId.equals(categoryId)) {
+				existLowerHerarchy = true;
+				break;
+			}
+		}
+
+		return existLowerHerarchy;
 	}
 }

@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.domain.Category;
+import com.example.domain.Item;
 import com.example.form.EditCategoryForm;
 import com.example.repository.CategoryRepository;
+import com.example.repository.ItemRepository;
 
 /**
  * カテゴリ編集を行うサービス.
@@ -18,6 +20,9 @@ public class EditCategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private ItemRepository itemRepository;
 
 	/**
 	 * 既存カテゴリのカテゴリ名更新をする.
@@ -87,5 +92,64 @@ public class EditCategoryService {
 
 		categoryRepository.insertCategory(category);
 		return true;
+	}
+
+	/**
+	 * 既存カテゴリを削除する.
+	 * 
+	 * @param form カテゴリ
+	 * @return 該当カテゴリに属する商品数
+	 */
+	public Integer deleteCategory(EditCategoryForm form) {
+		Integer itemsBelongToThisCategory = 0;
+		Item item = copyPropertiesFromFormToItem(form);
+		itemsBelongToThisCategory = itemRepository.getDataSizeWhenSearch(item);
+		if (itemsBelongToThisCategory != 0) {
+			return itemsBelongToThisCategory;
+		}
+
+		boolean existParentCategoryId = !"".equals(form.getParentCategoryId()) && form.getParentCategoryId() != null;
+		boolean existChildCategoryId = !"".equals(form.getChildCategoryId()) && form.getChildCategoryId() != null;
+		boolean existGrandChildCategoryId = !"".equals(form.getGrandChildCategoryId())
+				&& form.getGrandChildCategoryId() != null;
+		Integer categoryId = null;
+
+		if (existGrandChildCategoryId) {
+			categoryId = Integer.parseInt(form.getGrandChildCategoryId());
+		} else if (existChildCategoryId) {
+			categoryId = Integer.parseInt(form.getChildCategoryId());
+		} else if (existParentCategoryId) {
+			categoryId = Integer.parseInt(form.getParentCategoryId());
+		}
+
+		categoryRepository.deleteById(categoryId);
+
+		return 0;
+	}
+
+	/**
+	 * フォームオブジェクトからドメインオブジェクトへ値コピーする.
+	 * 
+	 * @param form フォーム
+	 * @return ドメイン
+	 */
+	public Item copyPropertiesFromFormToItem(EditCategoryForm form) {
+		Item item = new Item();
+		try {
+			item.setParentCategoryId(Integer.parseInt(form.getParentCategoryId()));
+		} catch (NumberFormatException e) {
+			item.setParentCategoryId(null);
+		}
+		try {
+			item.setChildCategoryId(Integer.parseInt(form.getChildCategoryId()));
+		} catch (NumberFormatException e) {
+			item.setChildCategoryId(null);
+		}
+		try {
+			item.setGrandChildCategoryId(Integer.parseInt(form.getGrandChildCategoryId()));
+		} catch (NumberFormatException e) {
+			item.setGrandChildCategoryId(null);
+		}
+		return item;
 	}
 }

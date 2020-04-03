@@ -1,8 +1,10 @@
 $(function() {
 
 	change_status_edit_form();
-	$("#showEditForm").prop('disabled', true);
-	$("#deleteButton").prop('disabled', true);
+	if(!$('#deleteError').length){
+		$("#showEditForm").prop('disabled', true);
+		$("#deleteButton").prop('disabled', true);
+	}
 	if($('#editButton').is(':visible')){
 		$("#existingParentCategory").prop('disabled', true);
 		$("#existingChildCategory").prop('disabled', true);
@@ -22,6 +24,8 @@ $(function() {
 	
 	//	editボタンを押下したときの処理
 	$("#showEditForm").on("click", function() {
+		
+		$('#deleteError').text("");
 		
 		// カテゴリのセレクトボックスを無効化（cancelしない限り選択値固定）する
 		$("#existingParentCategory").prop('disabled', true);
@@ -87,7 +91,11 @@ $(function() {
 
 // 親-子-孫各カテゴリの編集フォーム表示/非表示設定
 function change_status_edit_form() {
-	if($("#existingParentCategory option:selected").val()!="" && $("#existingParentCategory option:selected")!=null){
+	var parentCategory = $("#existingParentCategory option:selected").val();
+	var childCategory = $("#existingChildCategory option:selected").val();
+	var grandChildCategory = $("#existingGrandChildCategory option:selected").val();
+	
+	if(!$('#deleteError').length && parentCategory !="" && parentCategory!=null){
 		$("#editParentCategory").show();
 		$("#editParentCategory").prop('readonly',false);
 		$("#editMessage").show();
@@ -100,7 +108,7 @@ function change_status_edit_form() {
 		$("#cancel").hide();
 	}
 
-	if($("#existingChildCategory option:selected").val()!="" && $("#existingChildCategory option:selected")!=null){
+	if(!$('#deleteError').length && childCategory!="" && childCategory!=null){
 		$("#editChildCategory").show();
 		$("#editChildCategory").prop('readonly',false);
 		$("#editParentCategory").prop('readonly',true);
@@ -108,7 +116,7 @@ function change_status_edit_form() {
 		$("#editChildCategory").hide();
 	}
 
-	if($("#existingGrandChildCategory option:selected").val()!="" && $("#existingGrandChildCategory option:selected")!=null){
+	if(!$('#deleteError').length && grandChildCategory!="" && grandChildCategory!=null){
 		$("#editGrandChildCategory").show();
 		$("#editChildCategory").prop('readonly',true);
 	}else{

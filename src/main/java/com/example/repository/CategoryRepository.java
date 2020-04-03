@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
@@ -93,4 +94,14 @@ public class CategoryRepository {
 		}
 	}
 
+	/**
+	 * 引数のカテゴリIDに該当する既存カテゴリを削除する.
+	 * 
+	 * @param categoryId カテゴリID
+	 */
+	public void deleteById(Integer categoryId) {
+		String sql = "DELETE FROM  category WHERE id=:categoryId;";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("categoryId", categoryId);
+		template.update(sql, param);
+	}
 }
