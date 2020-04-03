@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ItemForDownload;
 import com.example.domain.Item;
 import com.example.form.SearchForm;
 import com.example.repository.ItemRepository;
@@ -38,6 +39,15 @@ public class ShowListService {
 		} else {
 			return itemRepository.findByIndex(viewSize, indexOfTop);
 		}
+	}
+
+	/**
+	 * 全商品情報を取得する.
+	 * 
+	 * @return 商品一覧
+	 */
+	public List<ItemForDownload> getAllItems() {
+		return itemRepository.findAll();
 	}
 
 	/**

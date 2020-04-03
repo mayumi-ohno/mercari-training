@@ -73,6 +73,16 @@
    			 <groupId>org.thymeleaf.extras</groupId>
    		 	<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
+		<!-- csv出力で使用 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    		<artifactId>jackson-dataformat-csv</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+    		<artifactId>lombok</artifactId>
+    		<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

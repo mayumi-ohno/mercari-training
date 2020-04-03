@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import com.example.ItemForDownload;
 import com.example.domain.Item;
 
 /**
@@ -44,6 +45,19 @@ public class ItemRepository {
 		return item;
 	};
 
+	/** ｃｓｖ出力用ローマッパー */
+	private final static RowMapper<ItemForDownload> ROW_MAPPER_CSV = (rs, i) -> {
+		ItemForDownload item = new ItemForDownload();
+		item.setId(rs.getInt("id"));
+		item.setName(rs.getString("name"));
+		item.setCondition(rs.getInt("condition"));
+		item.setCategory(String.valueOf(rs.getInt("category")));
+		item.setBrand(String.valueOf((rs.getInt("brand"))));
+		item.setPrice(rs.getDouble("price"));
+		item.setDescription(rs.getString("description"));
+		return item;
+	};
+
 	/**
 	 * 指定の行から一定数の商品情報を、商品名昇順で取得する.
 	 * 
@@ -58,6 +72,21 @@ public class ItemRepository {
 		sql.append("LIMIT :viewSize OFFSET :index;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("viewSize", viewSize).addValue("index", index);
 		List<Item> itemList = template.query(sql.toString(), param, ROW_MAPPER);
+		return itemList;
+	}
+
+	/**
+	 * 全商品情報を、商品名昇順で取得する.
+	 * 
+	 * @return 商品情報
+	 */
+	public List<ItemForDownload> findAll() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT id,name,condition,category,brand,price,description FROM items ");
+		sql.append("ORDER BY name; ");
+//		sql.append(commonPartOfSql());
+//		sql.append("ORDER BY A.name; ");
+		List<ItemForDownload> itemList = template.query(sql.toString(), ROW_MAPPER_CSV);
 		return itemList;
 	}
 
@@ -158,8 +187,8 @@ public class ItemRepository {
 		sql.append("WHERE NOT EXISTS (SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
-		
-		sql= new StringBuilder();
+
+		sql = new StringBuilder();
 		sql.append("UPDATE items SET brand=(SELECT id FROM brand WHERE name=:brand) ");
 		sql.append("WHERE id=:id;");
 		template.update(sql.toString(), param);
@@ -188,6 +217,20 @@ public class ItemRepository {
 		sql.append("UPDATE items SET brand=(SELECT id FROM brand WHERE name=:brand) ");
 		sql.append("WHERE id=(SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+		template.update(sql.toString(), param);
+	}
+
+	/**
+	 * 商品を削除する.
+	 * 
+	 * @param itemId 商品ID
+	 */
+	public void delete(StringBuilder itemIdList) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM items WHERE id IN (");
+		sql.append(itemIdList);
+		sql.append(");");
+		SqlParameterSource param = new MapSqlParameterSource();
 		template.update(sql.toString(), param);
 	}
 
