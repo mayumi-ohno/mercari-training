@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.example.ItemForDownload;
 import com.example.domain.Item;
+import com.example.domain.Sale;
 
 /**
  * 商品情報を扱うリポジトリ.
@@ -42,19 +42,11 @@ public class ItemRepository {
 		item.setShipping(rs.getInt("shipping"));
 		item.setDescription(rs.getString("description"));
 		item.setImage(rs.getString("image"));
-		return item;
-	};
-
-	/** ｃｓｖ出力用ローマッパー */
-	private final static RowMapper<ItemForDownload> ROW_MAPPER_CSV = (rs, i) -> {
-		ItemForDownload item = new ItemForDownload();
-		item.setId(rs.getInt("id"));
-		item.setName(rs.getString("name"));
-		item.setCondition(rs.getInt("condition"));
-		item.setCategory(String.valueOf(rs.getInt("category")));
-		item.setBrand(String.valueOf((rs.getInt("brand"))));
-		item.setPrice(rs.getDouble("price"));
-		item.setDescription(rs.getString("description"));
+		Sale sale = new Sale();
+		sale.setStart(rs.getDate("start"));
+		sale.setEnd(rs.getDate("period"));
+		sale.setDiscountRate(rs.getInt("discount_rate"));
+		item.setSale(sale);
 		return item;
 	};
 
@@ -76,17 +68,19 @@ public class ItemRepository {
 	}
 
 	/**
-	 * 全商品情報を、商品名昇順で取得する.
+	 * 全商品情報を引数のIDから指定件数分、商品名昇順で取得する.
 	 * 
+	 * @param limit  1回当のデータ数
+	 * @param offset データ読み込み開始行
 	 * @return 商品情報
 	 */
-	public List<ItemForDownload> findAll() {
+	public List<Item> findAllLimited(Integer limit, Integer offset) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT id,name,condition,category,brand,price,description FROM items ");
-		sql.append("ORDER BY name; ");
-//		sql.append(commonPartOfSql());
-//		sql.append("ORDER BY A.name; ");
-		List<ItemForDownload> itemList = template.query(sql.toString(), ROW_MAPPER_CSV);
+		sql.append(commonPartOfSql());
+		sql.append("ORDER BY A.name ");
+		sql.append("LIMIT :limit OFFSET :offset;");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("limit", limit).addValue("offset", offset);
+		List<Item> itemList = template.query(sql.toString(), param, ROW_MAPPER);
 		return itemList;
 	}
 
@@ -244,12 +238,14 @@ public class ItemRepository {
 		sql.append("SELECT A.id, A.name, A.condition, B.id AS grand_chilid_category_id, ");
 		sql.append("B.name AS grand_chilid_category, C.id AS child_category_id, ");
 		sql.append("C.name AS child_category, D.id AS parent_category_id, D.name AS parent_category, ");
-		sql.append("E.name AS brand, A.price, A.shipping, A.description, A.image ");
+		sql.append("E.name AS brand, A.price, A.shipping, A.description, A.image, ");
+		sql.append("sale.start, sale.period, sale.discount_rate ");
 		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
 		sql.append("ON A.category=B.id ");
 		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
 		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
 		sql.append("LEFT OUTER JOIN brand AS E ON A.brand=E.id ");
+		sql.append("LEFT OUTER JOIN sale ON A.id=sale.item_id ");
 		return sql;
 	}
 

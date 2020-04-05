@@ -19,7 +19,6 @@ public class AddUserForm {
 	/** パスワード */
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[!-~]{8,20}$", message = "error: Password must contain 8-20 characters, using all of uppercase, lowercase and number")
 	private String password;
-//	@NotBlank(message = "error: Select Authority")
 	@Pattern(regexp = "^[0-9]$", message = "error: Select Authority")
 	private String authority;
 

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.ItemForDownload;
 import com.example.domain.Item;
 import com.example.form.SearchForm;
 import com.example.repository.ItemRepository;
@@ -21,6 +20,15 @@ public class ShowListService {
 
 	@Autowired
 	private ItemRepository itemRepository;
+
+	/**
+	 * 全商品数を取得する.
+	 * 
+	 * @return 全商品数
+	 */
+	public Integer getAmountOfAllItems() {
+		return itemRepository.getAllDataSize();
+	}
 
 	/**
 	 * 商品の検索をする.
@@ -42,12 +50,14 @@ public class ShowListService {
 	}
 
 	/**
-	 * 全商品情報を取得する.
+	 * csv出力用の商品情報を取得する.
 	 * 
+	 * @param limit  1回当のデータ数
+	 * @param offset データ読み込み開始行
 	 * @return 商品一覧
 	 */
-	public List<ItemForDownload> getAllItems() {
-		return itemRepository.findAll();
+	public List<Item> getItemsForCsv(Integer limit, Integer offset) {
+		return itemRepository.findAllLimited(offset, limit);
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.example.domain;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 /**
  * 商品を表すドメイン.
  * 
@@ -36,6 +39,78 @@ public class Item {
 	private String description;
 	/** 画像 */
 	private String image;
+	/** セール情報 */
+	private Sale sale;
+
+	/**
+	 * 値引き予定の有無を返す.
+	 * 
+	 * @return 予定あり：true, 予定なし：false
+	 */
+	public boolean getToBeDiscount() {
+		LocalDate today = LocalDate.now();
+		LocalDate start;
+		try {
+			start = sale.getStart().toLocalDate();
+		} catch (Exception e) {
+			return false;
+		}
+		if (today.isBefore(start)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * セール中か否かを返す
+	 * 
+	 * @return セール中：true, セール中ではない：false
+	 */
+	public boolean getDiscounting() {
+		LocalDate today = LocalDate.now();
+		LocalDate start;
+		LocalDate end;
+		try {
+			start = sale.getStart().toLocalDate();
+			end = sale.getEnd().toLocalDate();
+		} catch (Exception e) {
+			return false;
+		}
+		boolean saleStarted = today.isAfter(start) || today.isEqual(start);
+		boolean saleNotEnded = today.isBefore(end) || today.isEqual(end);
+		if (saleStarted && saleNotEnded) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * セール価格を返す.
+	 * 
+	 * @return セール価格
+	 */
+	public Double getDiscountPrice() {
+		LocalDate today = LocalDate.now();
+		LocalDate start;
+		LocalDate end;
+		try {
+			start = sale.getStart().toLocalDate();
+			end = sale.getEnd().toLocalDate();
+		} catch (Exception e) {
+			return this.price;
+		}
+		boolean saleStarted = today.isAfter(start) || today.isEqual(start);
+		boolean saleNotEnded = today.isBefore(end) || today.isEqual(end);
+		if (saleStarted && saleNotEnded) {
+			BigDecimal originalPrice = BigDecimal.valueOf(this.price);
+			BigDecimal discountRate = BigDecimal.valueOf(100 - this.sale.getDiscountRate());
+			discountRate = discountRate.divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_UP);
+			BigDecimal discountPriceBD = originalPrice.multiply(discountRate);
+			discountPriceBD = discountPriceBD.setScale(1, BigDecimal.ROUND_UP);
+			return discountPriceBD.doubleValue();
+		}
+		return this.price;
+	}
 
 	public Integer getId() {
 		return id;
@@ -157,13 +232,21 @@ public class Item {
 		this.image = image;
 	}
 
+	public Sale getSale() {
+		return sale;
+	}
+
+	public void setSale(Sale sale) {
+		this.sale = sale;
+	}
+
 	@Override
 	public String toString() {
 		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", grandChildCategoryId="
 				+ grandChildCategoryId + ", grandChildCategory=" + grandChildCategory + ", childCategoryId="
 				+ childCategoryId + ", childCategory=" + childCategory + ", parentCategoryId=" + parentCategoryId
 				+ ", parentCategory=" + parentCategory + ", brand=" + brand + ", price=" + price + ", shipping="
-				+ shipping + ", description=" + description + ", image=" + image + "]";
+				+ shipping + ", description=" + description + ", image=" + image + ", sale=" + sale + "]";
 	}
 
 }

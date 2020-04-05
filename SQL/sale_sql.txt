@@ -1,0 +1,14 @@
+-- saleテーブル作成
+drop table sale; 
+create table sale (
+  id serial not null
+  , item_id integer
+  , setting timestamp
+  , start date
+  , period date
+  , discount_rate integer
+  , constraint sale_PKC primary key (id)
+) ;
+
+
+--sampleデータ

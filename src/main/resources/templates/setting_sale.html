@@ -22,11 +22,11 @@
    $(function() {
 	   $("#submitPagingNumber").prop("disabled", true)
 		  
-	   $("input[type='number']").on("click", function () {
+	   $("input[name='page']").on("click", function () {
 		  $("#submitPagingNumber").prop("disabled", false)
 	   });
 	   
-	   $("input[type='number']").blur( function () {
+	   $("input[name='page']").blur( function () {
 		   var inputNumber=$(this).val();
 		   var totalPages =$("#totalPages").text().replace("/", "")
 
@@ -38,6 +38,7 @@
 			   $("#submitPagingNumber").prop("disabled", true)
 		   }
 	   });
+	   
    });
   </script>
 </head>
@@ -67,10 +68,6 @@
   </nav>
 
   <div id="main" class="container-fluid">
-    <!-- addItem link -->
-    <div id="addItemButton">
-      <a class="btn btn-default" href="./add.html" th:href="@{/add}"><i class="fa fa-plus-square-o"></i> Add New Item</a>
-    </div>
 
     <!-- 検索フォーム -->
     <div id="forms">
@@ -112,39 +109,59 @@
       </nav>
     </div>
 
-	 <h3 class="text-danger" th:if="${completionOfAddition}" th:text="${completionOfAddition}"></h3>
-	 <h3 class="text-danger" th:if="${completionOfDelete}" th:text="${completionOfDelete}"></h3>
+	 <h3 class="text-danger" th:if="${completionOfsetting}" th:text="${completionOfsetting}"></h3>
+	 <h3 class="text-danger" th:if="${dateError}" th:text="${dateError}" id="dateError"></h3>
 
-    <!-- delete -->
-	<form method="post"  th:action="@{/delete-items}">
-    	<input type="hidden" name="itemIdList" id="deleteId">
-	    <button class="btn btn-default" id="deleteButton" onclick="return confirm('Are you sure to delete these items?')"> Delete selected items</button>
-	</form><br>
+    <!-- setting -->
+		<form method="post"  th:action="@{/sale/discount}" th:object="${saleForm}" class="form-inline" id="saleForm">
+   			<input type="hidden" name="itemIdList" id="saleId">
+   			Period:&nbsp;<input type="date" th:field="*{start}" name="start" th:min="${today}" placeholder="start date" class="form-control" >&nbsp;~&nbsp;
+   			<input type="date" th:field="*{end}" name="end" th:min="${today}" placeholder="end date" class="form-control" >&nbsp;&nbsp;/&nbsp;
+   			<input type="number" th:field="*{discountRate}" name="discountRate" min="1" max="100" style="width:200px" placeholder="discount rate" class="form-control" >perOff&nbsp;
+   			<button class="btn btn-default" id="saleSubmit">Submit</button><br>
+		</form>
+	<br>
+
 	
     <!-- table -->
     <div class="table-responsive">
       <table id="item-table" class="table table-hover table-condensed">
         <thead>
           <tr>
-            <th><input type="checkbox" id="selectAll">&nbsp;delete</th>
+            <th>
+            	<input type="checkbox" id="selectAll">&nbsp;<button class="btn btn-default" id="saleButton">discount</button>
+            </th>
             <th>name</th>
             <th>price</th>
+            <th>discount period</th>
+            <th>
+				<form method="post"  th:action="@{/sale/cancel}" class="form-inline">
+	           		<input type="checkbox" id="cancelAll">&nbsp;
+	   				<input type="hidden" name="itemIdList" id="cancelId">
+            		<button class="btn btn-default" id="cancelButton" onclick="return confirm('Are you sure to cancel?')">cancel discount</button>
+            	</form>
+            </th>
             <th>category</th>
             <th>brand</th>
-            <th>cond</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="item:${items}">
-            <td><input type="checkbox" th:value="${item.id}" name="delete"></td>
-            <td class="item-name"><a href="./detail.html" th:href="@{'/detail?itemId=' + ${item.id}}" th:text="${item.name}">Razer BlackWidow Chroma Keyboard</a></td>
-             <td>
+            <td><input type="checkbox" th:value="${item.id}" name="sale"></td>
+            <td class="item-name"><span  th:text="${item.name}">Razer BlackWidow Chroma Keyboard</span></td>
+            <td>
             	<div th:unless="${item.discounting}" class="item-price"><span th:text="${item.price}"></span></div>
             	<div th:if="${item.discounting}" class="item-price"><del th:text="${item.price}"></del></div>
-            	<div>
-            		<strong th:if="${item.discounting}" class="item-price" th:text="${item.discountPrice}"></strong>
-            		<span th:if="${item.discounting}" class="item-price" th:text="'&nbspNow&nbsp;'+${item.sale.discountRate}+'％off'" style="color:red"></span>
-            	</div>
+           		<strong th:if="${item.discounting}" class="item-price" th:text="${item.discountPrice}"></strong>
+           		<span th:if="${item.discounting}" class="item-price" th:text="'&nbsp;Now&nbsp;'+${item.sale.discountRate}+'％off'" style="color:red"></span>
+           		<span  th:if="${item.toBeDiscount}" style="color:red"  th:text=" 'ToBe '+${item.sale.discountRate}+'％off' "></span>
+            </td>
+            <td>
+            		<div th:if="${item.discounting} or ${item.toBeDiscount}" th:text="${item.sale.start}+'～'"></div>
+            		<span th:if="${item.discounting} or ${item.toBeDiscount}"  th:text="'&nbsp;&nbsp;'+${item.sale.end}"></span>
+            </td>
+            <td>
+            	<input type="checkbox" th:if="${item.discounting} or ${item.toBeDiscount}" th:value="${item.id}" name="cancelDiscount">
             </td>
             <td class="item-category">
             	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId}}" th:text="${item.parentCategory}">Electronics</a> / 
@@ -152,7 +169,6 @@
             	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId} +'&grandChildCategoryId=' + ${item.grandChildCategoryId}}" th:text="${item.grandChildCategory}">Components &amp; Parts</a>
             </td>
             <td class="item-brand"><a href="" th:href="@{'/items?brand=' + ${item.brand}}" th:text="${item.brand}">Razer</a></td>
-            <td class="item-condition" th:text="${item.condition}">3</td>
           </tr>
         </tbody>
       </table>
@@ -185,7 +201,8 @@
       </div>
     </div>
   </div>
- <script th:src="@{/js/delete_items.js}" src="../static/js/delete_items.js"></script>
+ <script th:src="@{/js/cancel_sale.js}" src="../static/js/cancel_sale.js"></script>
+ <script th:src="@{/js/setting_sale.js}" src="../static/js/setting_sale.js"></script>
  <script th:src="@{/js/category_list.js}" src="../static/js/category_list.js"></script>
 </body>
 </html>
