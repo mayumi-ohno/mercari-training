@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.domain.Item;
 import com.example.domain.LoginUser;
+import com.example.form.DiscountSearchingForm;
 import com.example.form.SaleForm;
 import com.example.form.SearchForm;
 import com.example.service.SaleSettingService;
@@ -52,13 +53,19 @@ public class SaleSettingController {
 		return new SaleForm();
 	}
 
+	@ModelAttribute
+	public DiscountSearchingForm setUpSearchingSaleForm() {
+		return new DiscountSearchingForm();
+	}
+
 	/**
 	 * 商品一覧を表示する.
 	 * 
 	 * @return 商品一覧ページ
 	 */
 	@RequestMapping("")
-	public String index(SearchForm form, Integer page, Model model, @AuthenticationPrincipal LoginUser loginUser) {
+	public String index(SearchForm form, Integer page, boolean searching, Model model,
+			@AuthenticationPrincipal LoginUser loginUser) {
 
 		// 総ページ数算出
 		Integer totalPages = null;
@@ -89,6 +96,10 @@ public class SaleSettingController {
 		LocalDate today = LocalDate.now();
 		model.addAttribute("today", today);
 
+		// 検索中フラグ
+		if (searching) {
+			model.addAttribute("searching", true);
+		}
 		return "setting_sale";
 	}
 
@@ -109,6 +120,26 @@ public class SaleSettingController {
 		}
 		saleSettingService.setting(form);
 		flash.addFlashAttribute("completionOfsetting", "Setting completed!!");
+		return "redirect:/sale";
+	}
+
+	/**
+	 * 検索条件に合致する商品をセールにする.
+	 * 
+	 * @param form  検索条件とセール情報
+	 * @param model リクエストスコープ
+	 * @param flash フラッシュスコープ
+	 * @return 商品一覧
+	 */
+	@RequestMapping("/search-and-discount")
+	public String seaechAndDiscount(DiscountSearchingForm form, Model model, RedirectAttributes flash) {
+		Integer start = Integer.valueOf(form.getStart().replaceAll("-", ""));
+		Integer end = Integer.valueOf(form.getEnd().replaceAll("-", ""));
+		if (end < start) {
+			flash.addFlashAttribute("dateError", "error: start date must be less than end date");
+			return "redirect:/sale";
+		}
+		saleSettingService.discountMatchingSearch(form);
 		return "redirect:/sale";
 	}
 

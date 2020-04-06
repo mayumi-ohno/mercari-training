@@ -24,7 +24,7 @@ public class SaleRepository {
 	private NamedParameterJdbcTemplate template;
 
 	/**
-	 * セール情報を追加する.
+	 * 商品ID指定でセール情報を追加する.
 	 * 
 	 * @param saleList セール情報
 	 */
@@ -46,6 +46,46 @@ public class SaleRepository {
 		sql.append(itemIdString);
 		sql.append(");");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(saleList.get(0));
+		template.update(sql.toString(), param);
+	}
+
+	/**
+	 * 検索条件に合致する商品をセールにする .
+	 * 
+	 * @param sale セール情報
+	 */
+	public void insertWhenSearching(Sale sale) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO sale (item_id,setting,start,period,discount_rate) ");
+		sql.append("SELECT A.id,CURRENT_TIMESTAMP,:start,:end,:discountRate ");
+		sql.append("FROM items AS A	 LEFT OUTER JOIN category AS B ");
+		sql.append("ON A.category=B.id ");
+		sql.append("LEFT OUTER JOIN category AS C ON B.parent=C.id ");
+		sql.append("LEFT OUTER JOIN category AS D ON C.parent=D.id ");
+		sql.append("LEFT OUTER JOIN brand AS E ON A.brand=E.id ");
+		sql.append("WHERE A.id IS NOT NULL ");
+		if (sale.getName() != null && !"".equals(sale.getName())) {
+			sql.append("AND A.name ILIKE :name ");
+		}
+		if (sale.getBrand() != null && !"".equals(sale.getBrand())) {
+			sql.append("AND E.name ILIKE :brand ");
+		}
+		if (sale.getParentCategoryId() != null) {
+			sql.append("AND D.id =:parentCategoryId ");
+		}
+		if (sale.getChildCategoryId() != null) {
+			sql.append("AND C.id =:childCategoryId ");
+		}
+		if (sale.getGrandChildCategoryId() != null) {
+			sql.append("AND B.id =:grandChildCategoryId ");
+		}
+		sql.append(";");
+		SqlParameterSource param = new MapSqlParameterSource().addValue("parentCategoryId", sale.getParentCategoryId())
+				.addValue("childCategoryId", sale.getChildCategoryId())
+				.addValue("grandChildCategoryId", sale.getGrandChildCategoryId())
+				.addValue("name", "%" + sale.getName() + "%").addValue("brand", "%" + sale.getBrand() + "%")
+				.addValue("start", sale.getStart()).addValue("end", sale.getEnd())
+				.addValue("discountRate", sale.getDiscountRate());
 		template.update(sql.toString(), param);
 	}
 

@@ -38,7 +38,6 @@
 			   $("#submitPagingNumber").prop("disabled", true)
 		   }
 	   });
-	   
    });
   </script>
 </head>
@@ -71,40 +70,54 @@
 
     <!-- 検索フォーム -->
     <div id="forms">
-      <form action="" class="form-inline" role="form" th:action="@{/items}" th:object="${searchForm}" method="post">
+      <form action="" class="form-inline" role="form" th:action="@{/sale}" th:object="${searchForm}" method="post">
         <div class="form-group">
-          <input type="text" class="form-control" id="name" name="name" th:field="*{name}" placeholder="item name"/>
+          <input type="text" class="form-control" id="searchName" name="name" th:field="*{name}" placeholder="item name"/>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
-          <select class="form-control" name="parentCategoryId">
+          <select class="form-control" name="parentCategoryId" id="searchParent">
             <option value="">- parentCategory -</option>
             <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
           </select>
-          <select class="form-control" name="childCategoryId">
+          <select class="form-control" name="childCategoryId" id="searchChild">
             <option value="">- childCategory -</option>
             <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
           </select>
-          <select class="form-control" name="grandChildCategoryId">
+          <select class="form-control" name="grandChildCategoryId" id="searchGrandChild">
             <option value="">- grandChild -</option>
             <option th:field="*{grandChildCategoryId}" th:each="grandChildCategory:${session.grandChildCategoryList}" th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}" th:data-val="${grandChildCategory.parent}">parentCategory1</option>
           </select>
         </div>
         <div class="form-group"><i class="fa fa-plus"></i></div>
         <div class="form-group">
-          <input type="text" class="form-control" name="brand"  th:field="*{brand}" placeholder="brand"/>
+          <input type="text" class="form-control" name="brand"  id="searchBrand" th:field="*{brand}" placeholder="brand"/>
         </div>
         <div class="form-group"></div>
-        <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> search</button>
+        <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> search</button><br>
+		<label>
+			<input type="checkbox" id="selectAllMatchingSearch" name="searching">&nbsp;Select all items matching this search criteria
+		</label>
       </form>
     </div>
-
+    <!-- setting -->
+		<form method="post"  th:action="@{/sale/search-and-discount}" th:object="${saleItemsSearchingForm}" class="form-inline" id="saleItemsSearchingForm">
+   			<input type="hidden" name="name" id="searchingName">
+   			<input type="hidden" name="parentCategoryId" id="searchingParent">
+   			<input type="hidden" name="childCategoryId" id="searchingChild">
+   			<input type="hidden" name="grandChildCategoryId" id="searchingGrandChild">
+   			<input type="hidden" name="brand" id="searchingBrand">
+   			Period:&nbsp;<input type="date" name="start" th:min="${today}" placeholder="start date" class="form-control" id="startInSaleItemsSearchingForm">&nbsp;~&nbsp;
+   			<input type="date" name="end" th:min="${today}" placeholder="end date" class="form-control"  id="endInSaleItemsSearchingForm">&nbsp;&nbsp;/&nbsp;
+   			<input type="number" name="discountRate" min="1" max="100" style="width:200px"  id="rateInSaleItemsSearchingForm" placeholder="discount rate" class="form-control" >perOff&nbsp;
+   			<button class="btn btn-default" id="submitSaleItemsSearching">Submit</button><br>
+		</form>
     <!-- pagination -->
     <div class="pages">
       <nav class="page-nav">
         <ul class="pager">
-          <li th:unless="${session.page==1}" class="previous"><a href="#" th:href="@{'/items?page=' + ${session.page-1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand} }" >&larr; prev</a></li>
-          <li th:unless="${session.page==session.totalPages}" class="next"><a href="#" th:href="@{'/items?page=' + ${session.page+1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand}  }">next &rarr;</a></li>
+          <li th:unless="${session.page==1}" class="previous"><a href="#" th:href="@{'/sale?page=' + ${session.page-1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand} }" >&larr; prev</a></li>
+          <li th:unless="${session.page==session.totalPages}" class="next"><a href="#" th:href="@{'/sale?page=' + ${session.page+1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand}  }">next &rarr;</a></li>
         </ul>
       </nav>
     </div>
@@ -115,9 +128,9 @@
     <!-- setting -->
 		<form method="post"  th:action="@{/sale/discount}" th:object="${saleForm}" class="form-inline" id="saleForm">
    			<input type="hidden" name="itemIdList" id="saleId">
-   			Period:&nbsp;<input type="date" th:field="*{start}" name="start" th:min="${today}" placeholder="start date" class="form-control" >&nbsp;~&nbsp;
-   			<input type="date" th:field="*{end}" name="end" th:min="${today}" placeholder="end date" class="form-control" >&nbsp;&nbsp;/&nbsp;
-   			<input type="number" th:field="*{discountRate}" name="discountRate" min="1" max="100" style="width:200px" placeholder="discount rate" class="form-control" >perOff&nbsp;
+   			Period:&nbsp;<input type="date" th:field="*{start}" name="start" th:min="${today}" placeholder="start date" class="form-control" id="startInSaleForm">&nbsp;~&nbsp;
+   			<input type="date" th:field="*{end}" name="end" th:min="${today}" placeholder="end date" class="form-control"  id="endtInSaleForm">&nbsp;&nbsp;/&nbsp;
+   			<input type="number" th:field="*{discountRate}" name="discountRate" min="1" max="100" style="width:200px"  id="rateInSaleForm" placeholder="discount rate" class="form-control" >perOff&nbsp;
    			<button class="btn btn-default" id="saleSubmit">Submit</button><br>
 		</form>
 	<br>
@@ -164,27 +177,28 @@
             	<input type="checkbox" th:if="${item.discounting} or ${item.toBeDiscount}" th:value="${item.id}" name="cancelDiscount">
             </td>
             <td class="item-category">
-            	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId}}" th:text="${item.parentCategory}">Electronics</a> / 
-            	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId}}" th:text="${item.childCategory}">Computers &amp; Tablets</a> / 
-            	<a href="" th:href="@{'/items?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId} +'&grandChildCategoryId=' + ${item.grandChildCategoryId}}" th:text="${item.grandChildCategory}">Components &amp; Parts</a>
+            	<a href="" th:href="@{'/sale?parentCategoryId=' + ${item.parentCategoryId}}" th:text="${item.parentCategory}">Electronics</a> / 
+            	<a href="" th:href="@{'/sale?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId}}" th:text="${item.childCategory}">Computers &amp; Tablets</a> / 
+            	<a href="" th:href="@{'/sale?parentCategoryId=' + ${item.parentCategoryId} +'&childCategoryId=' + ${item.childCategoryId} +'&grandChildCategoryId=' + ${item.grandChildCategoryId}}" th:text="${item.grandChildCategory}">Components &amp; Parts</a>
             </td>
-            <td class="item-brand"><a href="" th:href="@{'/items?brand=' + ${item.brand}}" th:text="${item.brand}">Razer</a></td>
+            <td class="item-brand"><a href="" th:href="@{'/sale?brand=' + ${item.brand}}" th:text="${item.brand}">Razer</a></td>
           </tr>
         </tbody>
       </table>
     </div>
 
+
     <!-- pagination -->
     <div class="pages">
       <nav class="page-nav">
         <ul class="pager">
-          <li th:unless="${session.page==1}" class="previous"><a href="#" th:href="@{'/items?page=' + ${session.page-1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand} }" >&larr; prev</a></li>
-          <li th:unless="${session.page==session.totalPages}" class="next"><a href="#" th:href="@{'/items?page=' + ${session.page+1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand}  }">next &rarr;</a></li>
+          <li th:unless="${session.page==1}" class="previous"><a href="#" th:href="@{'/sale?page=' + ${session.page-1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand} }" >&larr; prev</a></li>
+          <li th:unless="${session.page==session.totalPages}" class="next"><a href="#" th:href="@{'/sale?page=' + ${session.page+1} + '&name='+ ${session.searchValue.name} + '&parentCategoryId='+ ${session.searchValue.parentCategoryId} + '&childCategoryId='+ ${session.searchValue.childCategoryId}+ '&grandChildCategoryId='+ ${session.searchValue.grandChildCategoryId}+ '&brand='+ ${session.searchValue.brand}  }">next &rarr;</a></li>
         </ul>
       </nav>
       <!-- ページ番号を指定して表示するフォーム -->
       <div id="select-page">
-        <form class="form-inline" th:action="@{/items}" method="post" onsubmit="return false;" >
+        <form class="form-inline" th:action="@{/sale}" method="post" onsubmit="return false;" >
           <div class="form-group">
             <div class="input-group col-xs-6">
               <label></label>

@@ -11,4 +11,3 @@ create table sale (
 ) ;
 
 
---sampleデータ

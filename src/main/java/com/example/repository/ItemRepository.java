@@ -77,7 +77,7 @@ public class ItemRepository {
 	public List<Item> findAllLimited(Integer limit, Integer offset) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(commonPartOfSql());
-		sql.append("ORDER BY A.name ");
+		sql.append("ORDER BY name ");
 		sql.append("LIMIT :limit OFFSET :offset;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("limit", limit).addValue("offset", offset);
 		List<Item> itemList = template.query(sql.toString(), param, ROW_MAPPER);

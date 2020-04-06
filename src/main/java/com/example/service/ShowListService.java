@@ -57,7 +57,7 @@ public class ShowListService {
 	 * @return 商品一覧
 	 */
 	public List<Item> getItemsForCsv(Integer limit, Integer offset) {
-		return itemRepository.findAllLimited(offset, limit);
+		return itemRepository.findAllLimited(limit, offset);
 	}
 
 	/**
