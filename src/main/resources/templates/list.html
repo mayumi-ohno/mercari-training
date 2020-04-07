@@ -116,7 +116,7 @@
 	 <h3 class="text-danger" th:if="${completionOfDelete}" th:text="${completionOfDelete}"></h3>
 
     <!-- delete -->
-	<form method="post"  th:action="@{/delete-items}">
+	<form method="post"  th:action="@{/delete-items}" sec:authorize="hasRole('ROLE_ADMIN')">
     	<input type="hidden" name="itemIdList" id="deleteId">
 	    <button class="btn btn-default" id="deleteButton" onclick="return confirm('Are you sure to delete these items?')"> Delete selected items</button>
 	</form><br>
@@ -126,7 +126,7 @@
       <table id="item-table" class="table table-hover table-condensed">
         <thead>
           <tr>
-            <th><input type="checkbox" id="selectAll">&nbsp;delete</th>
+            <th sec:authorize="hasRole('ROLE_ADMIN')"><label><input type="checkbox" id="selectAll">&nbsp;delete</label></th>
             <th>name</th>
             <th>price</th>
             <th>category</th>
@@ -136,7 +136,7 @@
         </thead>
         <tbody>
           <tr th:each="item:${items}">
-            <td><input type="checkbox" th:value="${item.id}" name="delete"></td>
+            <td sec:authorize="hasRole('ROLE_ADMIN')"><input type="checkbox" th:value="${item.id}" name="delete"></td>
             <td class="item-name"><a href="./detail.html" th:href="@{'/detail?itemId=' + ${item.id}}" th:text="${item.name}">Razer BlackWidow Chroma Keyboard</a></td>
              <td>
             	<div th:unless="${item.discounting}" class="item-price"><span th:text="${item.price}"></span></div>

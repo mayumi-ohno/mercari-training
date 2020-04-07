@@ -2,6 +2,8 @@ package com.example.repository;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -21,6 +23,8 @@ import com.example.domain.Sale;
  */
 @Repository
 public class ItemRepository {
+
+	private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
 
 	@Autowired
 	private NamedParameterJdbcTemplate template;
@@ -186,6 +190,7 @@ public class ItemRepository {
 		sql.append("UPDATE items SET brand=(SELECT id FROM brand WHERE name=:brand) ");
 		sql.append("WHERE id=:id;");
 		template.update(sql.toString(), param);
+		logger.info("【既存商品更新】id:" + item.getId() + ", name:" + item.getName() + ", price:" + item.getPrice());
 	}
 
 	/**
@@ -212,6 +217,7 @@ public class ItemRepository {
 		sql.append("WHERE id=(SELECT id FROM brand WHERE name=:brand);");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(item);
 		template.update(sql.toString(), param);
+		logger.info("【新規商品追加】 name:" + item.getName() + ", price:" + item.getPrice());
 	}
 
 	/**
@@ -226,6 +232,7 @@ public class ItemRepository {
 		sql.append(");");
 		SqlParameterSource param = new MapSqlParameterSource();
 		template.update(sql.toString(), param);
+		logger.info("【既存商品削除】id:" + itemIdList);
 	}
 
 	/**

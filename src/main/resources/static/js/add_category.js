@@ -8,8 +8,18 @@ $(function() {
 	if(!$("#grandChildError").length && !$("#childIsBlank").length){
 		$("#formsForAddGrandChild").hide();
 	}
+	if($("#selectParent2 option:selected").val() !=""){
+		$("input[name='childCategoryName']").prop('disabled', false);
+	}else{
+		$("input[name='childCategoryName']").prop('disabled', true);
+	}
+	if($("#selectChild option:selected").val() !=""){
+		$("input[name='grandChildCategoryName']").prop('disabled', false);
+	}else{
+		$("input[name='grandChildCategoryName']").prop('disabled', true);
+	}
 	
-	var $parentCatogories =$("#selectParent"); // 親カテゴリの要素を変数化
+	var $parentCatogories =$("#selectParent2"); // 親カテゴリの要素を変数化
 	var $childCtegories = $("#selectChild"); // 子カテゴリの要素を変数化
 	var originalChildCategories = $childCtegories.html(); // 後のイベントで、不要なoption要素を削除するため、オリジナルをとっておく
 	
@@ -34,6 +44,23 @@ $(function() {
 		$("#formsForAddGrandChild").show();
 		$("#formsForAddParent").hide();
 		$("#formsForAddChild").hide();
+		$("input[name='grandChildCategoryName']").prop('disabled', true);
+	});
+	
+	$("#selectParent1").on("change", function(){
+		if($("#selectParent1 option:selected").val() !=""){
+			$("input[name='childCategoryName']").prop('disabled', false);
+		}else{
+			$("input[name='childCategoryName']").prop('disabled', true);
+		}
+	});
+	
+	$childCtegories.on("change", function(){
+		if($("#selectChild option:selected").val() !=""){
+			$("input[name='grandChildCategoryName']").prop('disabled', false);
+		}else{
+			$("input[name='grandChildCategoryName']").prop('disabled', true);
+		}
 	});
 	
 	// -------子カテゴリリスト編集メソッド-----------------------------------------------
@@ -53,13 +80,14 @@ $(function() {
 		});
 
 		if ($parentCatogories.val() == "") {
-			$childCtegories.attr('disabled', 'disabled');
+			$childCtegories.prop('disabled', true);
 		} else {
-			$childCtegories.removeAttr('disabled');
+			$childCtegories.prop('disabled', false);
 		}
 		
 		if ($parentCatogories.val() == "") {
 			$childCtegories.val("");
 		}
+		
 	});
 });	

@@ -65,14 +65,14 @@
       <a class="btn btn-default" id="addChildCategory"><i class="fa fa-plus-square-o"></i> Child Category</a>
         <form action="" class="form-inline" role="form" th:action="@{/category/add-child}" th:object="${editCategoryForm}" method="post" style="display: inline">
         <div class="form-group" id="formsForAddChild">
-          <select class="form-control" name="parentCategoryId">
+          <select class="form-control" name="parentCategoryId" id="selectParent1">
             <option value="">- parentCategory -</option>
             <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
           </select>
           <input type="text" class="form-control" name="childCategoryName" placeholder="childCategory" th:field="*{childCategoryName}"/>
          <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
         <div style="color: red" th:if="${parentIsBlank}" th:text="${parentIsBlank}" id="parentIsBlank">Error</div>
-        <div style="color: red" th:if="${childError}" th:text="${childError}" id="childError">Error</div>
+        <div style="color: red" th:if="${childError}" th:unless="${parentIsBlank}" th:text="${childError}" id="childError">Error</div>
         </div>
     </form>
     <br>
@@ -81,7 +81,7 @@
       <a class="btn btn-default" id="addGrandChildCategory"><i class="fa fa-plus-square-o"></i> GrandChild Category</a>
         <form action="" class="form-inline" role="form" th:action="@{/category/add-grandchild}" th:object="${editCategoryForm}" method="post" style="display: inline">
         <div class="form-group" id="formsForAddGrandChild">
-          <select class="form-control" name="parentCategoryId" id="selectParent">
+          <select class="form-control" name="parentCategoryId" id="selectParent2">
             <option value="">- parentCategory -</option>
             <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
           </select>
@@ -91,9 +91,9 @@
           </select>
           <input type="text" class="form-control" name="grandChildCategoryName" th:field="*{grandChildCategoryName}" placeholder="grandChildCategory"/>
          <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
-        </div>
         <div style="color: red" th:if="${childIsBlank}" th:text="${childIsBlank}" id="childIsBlank">Error</div>
-        <div style="color: red" th:if="${grandChildError}" th:text="${grandChildError}" id="grandChildError">Error</div>
+        <div style="color: red" th:if="${grandChildError}" th:unless="${childIsBlank}" th:text="${grandChildError}" id="grandChildError">Error</div>
+        </div>
     </form>
     
   </div>

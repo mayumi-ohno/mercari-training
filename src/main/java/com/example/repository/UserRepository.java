@@ -75,8 +75,8 @@ public class UserRepository {
 	public void insert(User user) {
 		StringBuilder sql = new StringBuilder();
 		if (user.getAuthority() == null) {
-			sql.append("INSERT INTO users (name, password) ");
-			sql.append("SELECT :email, :password");
+			sql.append("INSERT INTO users (name, password, authority) ");
+			sql.append("SELECT :email, :password, 2 ");
 		} else {
 			sql.append("INSERT INTO users (name, password, authority) ");
 			sql.append("SELECT :email, :password, :authority ");

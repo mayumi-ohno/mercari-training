@@ -70,15 +70,15 @@
         </div>
         <div class="form-group"></div>
         <button type="button" class="btn btn-default" id="showEditForm">edit</button>
-        <button type="submit" class="btn btn-default" id="deleteButton" name="deleteFlag" value="true"  onclick="return confirm('本当に削除しますか？')">delete</button>
+        <button type="submit" class="btn btn-default" id="deleteButton" name="deleteFlag" value="true"  onclick="return confirm('Are you sure to delete this category?')">delete</button>
         <br>
         <br>
-        <div th:unless="${editError}" id="editMessage" style="color:red">Correct name of selected category</div>
-        <div style="color: red" th:if="${editError}" th:text="${editError}" id="edietError">Error</div>
+        <div th:unless="${editError}" id="editMessage"><strong>rename</strong></div>
+        <div style="color: red" th:if="${editError}" th:text="${editError}" id="edietError"></div>
         <input type="text" class="form-control" th:field="*{parentCategoryName}" name="parentCategoryName" placeholder="parentCategory" id="editParentCategory"/>
         <input type="text" class="form-control" th:field="*{childCategoryName}" name="childCategoryName" placeholder="childCategory" id="editChildCategory"/>
         <input type="text" class="form-control" th:field="*{grandChildCategoryName}" name="grandChildCategoryName" placeholder="grandChildCategory" id="editGrandChildCategory"/>
-        <button type="submit" class="btn btn-default" id="editButton" name="deleteFlag" value="false"  onclick="return confirm('内容に間違いありませんか？')"><i class="fa fa-angle-double-right"></i> submit</button>
+        <button type="submit" class="btn btn-default" id="editButton" name="deleteFlag" value="false"  onclick="return confirm('Are you sure to rename this category?')"><i class="fa fa-angle-double-right"></i> submit</button>
         <button type="button" class="btn btn-default" id="cancel">cancel</button>
       </form>
     </div>

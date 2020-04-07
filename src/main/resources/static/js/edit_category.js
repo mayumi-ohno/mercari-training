@@ -94,8 +94,7 @@ function change_status_edit_form() {
 	var parentCategory = $("#existingParentCategory option:selected").val();
 	var childCategory = $("#existingChildCategory option:selected").val();
 	var grandChildCategory = $("#existingGrandChildCategory option:selected").val();
-	
-	if(!$('#deleteError').length && parentCategory !="" && parentCategory!=null){
+	if($('#deleteError').text()=="" && parentCategory !="" && parentCategory!=null){
 		$("#editParentCategory").show();
 		$("#editParentCategory").prop('readonly',false);
 		$("#editMessage").show();
@@ -108,7 +107,7 @@ function change_status_edit_form() {
 		$("#cancel").hide();
 	}
 
-	if(!$('#deleteError').length && childCategory!="" && childCategory!=null){
+	if($('#deleteError').text()=="" && childCategory!="" && childCategory!=null){
 		$("#editChildCategory").show();
 		$("#editChildCategory").prop('readonly',false);
 		$("#editParentCategory").prop('readonly',true);
@@ -116,7 +115,7 @@ function change_status_edit_form() {
 		$("#editChildCategory").hide();
 	}
 
-	if(!$('#deleteError').length && grandChildCategory!="" && grandChildCategory!=null){
+	if($('#deleteError').text()=="" && grandChildCategory!="" && grandChildCategory!=null){
 		$("#editGrandChildCategory").show();
 		$("#editChildCategory").prop('readonly',true);
 	}else{

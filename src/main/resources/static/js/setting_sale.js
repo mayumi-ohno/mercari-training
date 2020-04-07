@@ -11,12 +11,10 @@ $(function() {
 		$("#cancelAll").prop('disabled', true);
 	}
 
-	if(!$("#dateError").length){
 		$("#saleItemsSearchingForm").hide();
 		$("#saleButton").prop('disabled', true);
 		$("#saleSubmit").prop('disabled', true);
 		$("#saleForm").hide();
-	}
 
 	$('input[name="sale"]').on("change", function() {
 		$("#saleForm").hide();
@@ -70,7 +68,6 @@ $(function() {
 		var startDate = $("#startInSaleItemsSearchingForm").val();
 		var endDate = $("#endInSaleItemsSearchingForm").val();
 		var discountRate = $("#rateInSaleItemsSearchingForm").val();
-		alert(startDate+","+endDate+","+discountRate);
 		var startInvalid = startDate!=null && startDate!="";
 		var endInvalid = endDate!=null && endDate!="";
 		var discountRateInvalid = 0<discountRate && discountRate<=100;

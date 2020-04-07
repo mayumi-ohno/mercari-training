@@ -18,7 +18,7 @@ import com.example.service.ShowListService;
 public class CsvController {
 
 	/** 1回のDBアクセスで取得するデータ数 */
-	private static final Integer DATAS_PER_1SQL = 100000;
+	private static final Integer DATAS_PER_1SQL = 500000;
 
 	@Autowired
 	private ShowListService showListService;
@@ -46,16 +46,17 @@ public class CsvController {
 				List<Item> itemList = showListService.getItemsForCsv(DATAS_PER_1SQL, i * DATAS_PER_1SQL);
 				itemList.forEach(item -> {
 					String id = String.valueOf(item.getId());
-					String name = item.getName();
+					String name = item.getName().replaceAll(",", " ");
 					String condition = String.valueOf(item.getCondition());
 					String category = item.getParentCategory() + "/" + item.getChildCategory() + "/"
 							+ item.getGrandChildCategory();
+					category = category.replaceAll(",", " ");
 					String brand = "";
 					if (!"null".equals(item.getBrand()) && item.getBrand() != null) {
-						brand = item.getBrand();
+						brand = item.getBrand().replaceAll(",", " ");
 					}
 					String price = String.valueOf(item.getPrice());
-					String description = item.getDescription();
+					String description = item.getDescription().replaceAll(",", " ");
 					String data = id + "," + name + "," + condition + "," + category + "," + brand + "," + price + ","
 							+ description + "\r\n";
 					pw.print(data);

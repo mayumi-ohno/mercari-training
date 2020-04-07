@@ -44,10 +44,11 @@ public class MercariDetailsService implements UserDetailsService {
 
 		// 権限付与
 		Collection<GrantedAuthority> authorityList = new ArrayList<>();
-		authorityList.add(new SimpleGrantedAuthority("ROLE_USER")); // ユーザ権限付与
 		int authority = user.getAuthority();
 		if (authority == 1) {
 			authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN")); // 管理者権限付与
+		} else {
+			authorityList.add(new SimpleGrantedAuthority("ROLE_USER")); // ユーザ権限付与
 		}
 
 		return new LoginUser(user, authorityList);

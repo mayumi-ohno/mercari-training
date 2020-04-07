@@ -72,14 +72,15 @@ public class EditCategoriesController {
 			boolean existLowerHerarchty = checkLowerHerarchy(form, model);
 			if (existLowerHerarchty) {
 				model.addAttribute("deleteError",
-						"error: Cannot DELETE because Lower-Herarchy-Categories are existing");
+						"error: CANNOT DELETE because Lower-Herarchy-Categories are existing");
 				return "edit_category";
 			}
 			itemsBelongingToThisCategory = editCategoryService.deleteCategory(form);
 		}
 
 		if (itemsBelongingToThisCategory != null && itemsBelongingToThisCategory > 0) {
-			model.addAttribute("deleteError", "error: Cannot DELETE because some items are belonging to this category");
+			model.addAttribute("deleteError",
+					"error: CANNNOT DELETE because some items are belonging to this category");
 			return "edit_category";
 		}
 
@@ -90,7 +91,7 @@ public class EditCategoriesController {
 
 		// 編集処理ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 		boolean editFormContainBlank = checkBlankInEditForm(form);
-		if (!deleteFlag && editFormContainBlank) {
+		if (editFormContainBlank) {
 			model.addAttribute("editError", "error:may not be empty");
 			return "edit_category";
 		}
@@ -158,7 +159,7 @@ public class EditCategoriesController {
 	public String inputNewChild(EditCategoryForm form, Model model, RedirectAttributes flash) {
 		int errorCount = 0;
 		if ("".equals(form.getParentCategoryId())) {
-			model.addAttribute("parentIsBlank", "error:select a ParentCategory");
+			model.addAttribute("parentIsBlank", "error:may not be empty");
 			errorCount++;
 		}
 		if ("".equals(form.getChildCategoryName()) || form.getChildCategoryName() == null) {
@@ -193,7 +194,7 @@ public class EditCategoriesController {
 	public String inputNewGrandChild(EditCategoryForm form, Model model, RedirectAttributes flash) {
 		int errorCount = 0;
 		if ("".equals(form.getParentCategoryId()) || "".equals(form.getChildCategoryId())) {
-			model.addAttribute("childIsBlank", "error:select ParentCategory and ChildCategory");
+			model.addAttribute("childIsBlank", "error:error:may not be empty");
 			errorCount++;
 		}
 		if ("".equals(form.getGrandChildCategoryName()) || form.getGrandChildCategoryName() == null) {
@@ -261,7 +262,6 @@ public class EditCategoriesController {
 		boolean existChildCategoryId = !"".equals(form.getChildCategoryId()) && form.getChildCategoryId() != null;
 		boolean existGrandChildCategoryId = !"".equals(form.getGrandChildCategoryId())
 				&& form.getGrandChildCategoryId() != null;
-		boolean existLowerHerarchy = false;
 
 		String categoryId = null;
 		List<Category> categoriesInLowerHerarchy = new ArrayList<>();
@@ -278,11 +278,10 @@ public class EditCategoriesController {
 		for (Category category : categoriesInLowerHerarchy) {
 			String parentId = String.valueOf(category.getParent());
 			if (parentId.equals(categoryId)) {
-				existLowerHerarchy = true;
-				break;
+				return true;
 			}
 		}
 
-		return existLowerHerarchy;
+		return false;
 	}
 }
