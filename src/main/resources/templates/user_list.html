@@ -110,7 +110,7 @@
       <div>
         <ul class="nav navbar-nav navbar-right">
 		  <!-- 管理者の人だけ表示 -->
-		  <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
+		  <li><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
@@ -177,7 +177,7 @@
             <th>email</th>
             <th>authority</th>
             <th>edit</th>
-            <th>delete</th>
+            <th sec:authorize="hasRole('ROLE_ADMIN')">delete</th>
             <th>message</th>
           </tr>
         </thead>
@@ -213,7 +213,7 @@
     	      	</form>
             	<button type="button" th:id="${user.id}+'cancel'" th:value="${user.id}" class="btn-border">cancel</button>
             </td>
-            <td>
+            <td sec:authorize="hasRole('ROLE_ADMIN')">
             	<form method="post" th:action="@{/user/delete}">
 	            	<input type="hidden" th:value="${user.id}" name="userId">
     	        	<button class="btn-border" th:id="${user.id}+'delete'"

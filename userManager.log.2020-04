@@ -5,3 +5,4 @@
 2020/04/07 11:49:50:985 INFO - UserRepository.update 【既存ユーザー更新】email:mayumi.ono@rakus-partners.co.jp, authority:2
 2020/04/07 11:49:57:982 INFO - UserRepository.delete 【既存ユーザー削除】userId:17
 2020/04/07 02:08:39:164 INFO - UserRepository.insert 【新規ユーザー追加】email:mayumi.ono@rakus-partners.co.jp, authority:2
+2020/04/13 03:38:36:260 INFO - UserRepository.insert 【新規ユーザー追加】email:hogemi@hoge, authority:null

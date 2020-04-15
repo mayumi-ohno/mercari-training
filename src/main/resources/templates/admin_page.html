@@ -34,7 +34,7 @@
       <div>
         <ul class="nav navbar-nav navbar-right">
 		  <!-- 管理者の人だけ表示 -->
-		  <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
+		  <li><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
@@ -60,7 +60,7 @@
             <th><a th:href="@{/user}">Edit Users</a></th>
           </tr>
           <tr>
-            <th><a th:href="@{/sale}">Sale setting</a></th>
+            <th><a th:href="@{/sale}">Discount setting</a></th>
           </tr>
           <tr>
             <th><a th:href="@{/download/all-items}" target="_blank">Download all items</a></th>

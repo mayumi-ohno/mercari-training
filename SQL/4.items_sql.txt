@@ -29,7 +29,7 @@ SELECT A.id, A.name, A.condition_id, C.id, B.id, A.price, A.shipping, A.descript
 select
 split_part(c.name_all, '/', 1)
 ,count(*)
-from items i
+from items 
 left join category c on c.id = i.category
 group by split_part(c.name_all, '/', 1);
 

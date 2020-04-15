@@ -59,7 +59,7 @@ public class MrcariConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 		.mvcMatchers("/", "/login-error", "/register", "/register/**").permitAll() // ログイン前にアクセス可とするパス群
-		.antMatchers("/admin", "/admin/**", "/category", "/category/**", "/user", "/user/**").hasRole("ADMIN") 		
+//		.antMatchers("/admin", "/admin/**", "/category", "/category/**", "/user", "/user/**").hasRole("ADMIN") 		
 		.anyRequest().authenticated(); // 上記以外のパスは、ログイン以前のアクセス不可とする
 		// LOGIN
 		http.formLogin().loginPage("/") // ログイン画面を表示するパス

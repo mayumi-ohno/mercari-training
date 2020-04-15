@@ -11,7 +11,10 @@
 	<groupId>com.example</groupId>
 	<artifactId>mercari-training</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- パッケージを「war」に設定  -->
+	<packaging>war</packaging>
 	<name>mercari-training</name>
+	<url>http://maven.apache.org</url>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -83,12 +86,23 @@
     		<artifactId>lombok</artifactId>
     		<scope>provided</scope>
 		</dependency>
+		<!-- 外部tomcatへのデプロイで使用 -->
+		 <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
+		<!-- warファイル名を指定 -->
+		<finalName>mercari</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <executable>true</executable>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

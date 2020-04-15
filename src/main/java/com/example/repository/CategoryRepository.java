@@ -50,9 +50,27 @@ public class CategoryRepository {
 	 * @param category カテゴリ情報
 	 */
 	public void updateCategory(Category category) {
-		String sql = "UPDATE category SET parent=:parent, name=:name, name_all=:nameAll WHERE id=:id;";
+		StringBuilder sql = new StringBuilder();
+		//孫カテゴリ編集の場合
+		if (category.getNameAll() != null && category.getParent() != null) {
+			sql.append("UPDATE category SET parent=:parent, name=:name, name_all=:nameAll WHERE id=:id;");
+		}
+		//子カテゴリ編集の場合
+		if (category.getNameAll() == null && category.getParent() != null) {
+			sql.append("WITH update_id AS ( ");
+			sql.append("UPDATE category SET name=:name WHERE id=:id RETURNING id) ");
+			sql.append("UPDATE category SET name_all=SPLIT_PART(name_all, '/',1)||'/'||:name||'/'||name ");
+			sql.append(" WHERE parent IN (SELECT id FROM update_id);");
+		}
+		//親カテゴリ編集の場合
+		if (category.getNameAll() == null && category.getParent() == null) {
+			sql.append("WITH update_id AS ( ");
+			sql.append("UPDATE category SET name=:name WHERE id=:id RETURNING id) ");
+			sql.append("UPDATE category SET name_all=:name||'/'||SPLIT_PART(name_all, '/',2)||'/'||name ");
+			sql.append("WHERE parent IN (SELECT id FROM category WHERE parent IN(SELECT id FROM category WHERE id=:id) );");
+		}
 		SqlParameterSource param = new BeanPropertySqlParameterSource(category);
-		template.update(sql, param);
+		template.update(sql.toString(), param);
 	}
 
 	/**

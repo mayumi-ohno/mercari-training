@@ -11,11 +11,12 @@ create table original (
   , constraint original_PKC primary key (id)
 ) ;
 
-create index brand_index
-  on original(brand);
-
 create unique index original_pki
   on original(id);
 
 -- C:ドライブ直下の.tsvファイルからデータインポート
 COPY original FROM 'C:\train.tsv' CSV DELIMITER E'\t' HEADER;
+
+-- AWSの場合はwinSCPでEC2上にtsvファイルを置いたうえで
+-- TeraTermから以下を実行
+\COPY original FROM '/home/ec2-user/train.tsv' CSV DELIMITER E'\t' HEADER;

@@ -18,6 +18,18 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <title>Rakus Items</title>
+  <script>
+ $(function() {
+	 $("#selectParent2").on("change", function() {
+		 var parentName = $("#selectParent2 option:selected").text();
+		 $("#hiddenParent").val(parentName);
+	 });
+	 $("#selectChild").on("change", function() {
+		 var childName = $("#selectChild option:selected").text();
+		 $("#hiddenChild").val(childName);
+	 });
+ });
+ </script>
 </head>
 <body>
   <!-- navbar -->
@@ -34,7 +46,7 @@
       <div>
         <ul class="nav navbar-nav navbar-right">
 		  <!-- 管理者の人だけ表示 -->
-		  <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
+		  <li><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">
@@ -69,7 +81,7 @@
             <option value="">- parentCategory -</option>
             <option th:field="*{parentCategoryId}" th:each="parentCategory:${session.parentCategoryList}" th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory1</option>
           </select>
-          <input type="text" class="form-control" name="childCategoryName" placeholder="childCategory" th:field="*{childCategoryName}"/>
+          <input type="text" class="form-control" name="childCategoryName" placeholder="new childCategory" th:field="*{childCategoryName}"/>
          <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
         <div style="color: red" th:if="${parentIsBlank}" th:text="${parentIsBlank}" id="parentIsBlank">Error</div>
         <div style="color: red" th:if="${childError}" th:unless="${parentIsBlank}" th:text="${childError}" id="childError">Error</div>
@@ -89,7 +101,9 @@
             <option value="">- childCategory -</option>
             <option th:field="*{childCategoryId}" th:each="childCategory:${session.childCategoryList}" th:text="${childCategory.name}" th:value="${childCategory.id}" th:data-val="${childCategory.parent}">parentCategory1</option>
           </select>
-          <input type="text" class="form-control" name="grandChildCategoryName" th:field="*{grandChildCategoryName}" placeholder="grandChildCategory"/>
+          <input type="text" class="form-control" name="grandChildCategoryName" th:field="*{grandChildCategoryName}" placeholder="new grandChildCategory"/>
+		  <input type="hidden" name="parentCategoryName" id="hiddenParent">
+		  <input type="hidden" name="childCategoryName" id="hiddenChild">
          <button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> add</button>
         <div style="color: red" th:if="${childIsBlank}" th:text="${childIsBlank}" id="childIsBlank">Error</div>
         <div style="color: red" th:if="${grandChildError}" th:unless="${childIsBlank}" th:text="${grandChildError}" id="grandChildError">Error</div>

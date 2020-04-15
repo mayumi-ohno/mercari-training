@@ -34,7 +34,7 @@
       <div>
         <ul class="nav navbar-nav navbar-right">
 		  <!-- 管理者の人だけ表示 -->
-		  <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
+		  <li><a th:href="@{/admin}">Admin&nbsp;&#xFE0E;&#x2699;</a></li>
           <li><a id="logout" href="./login.html" th:href="@{/logout}">Logout <i class="fa fa-power-off"></i></a></li>
         </ul>
         <p class="navbar-text navbar-right">

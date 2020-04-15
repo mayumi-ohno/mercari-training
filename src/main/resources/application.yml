@@ -1,9 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/mercari
-    username: postgres
-    password: postgres
+#    url: jdbc:postgresql://localhost:5432/mercari
+#    username: postgres
+#    password: postgres
+    url: jdbc:postgresql://mercari-tr-db.ca73rkjme2bw.ap-northeast-1.rds.amazonaws.com/mercari_aws_db
+    username: root
+    password: rootroot
     
     jmx:
       enabled: false

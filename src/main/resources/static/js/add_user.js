@@ -17,7 +17,7 @@ $(function() {
 		$("button[id=" +userId+"submit]").prop("desabled", false);
 	});
 	
-	$($("select[id$=authority]")).on("change", function(){
+	$("select[id$=authority]").on("change", function(){
 		var userId = $(this).attr("id").replace("authority", "");
 		$("button[id=" +userId+"submit]").prop("desabled", false);
 	});

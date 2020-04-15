@@ -56,7 +56,10 @@ public class CsvController {
 						brand = item.getBrand().replaceAll(",", " ");
 					}
 					String price = String.valueOf(item.getPrice());
-					String description = item.getDescription().replaceAll(",", " ");
+					String description = "";
+					if (!"null".equals(item.getDescription()) && item.getDescription() != null) {
+						description = item.getDescription().replaceAll(",", " ");
+					}
 					String data = id + "," + name + "," + condition + "," + category + "," + brand + "," + price + ","
 							+ description + "\r\n";
 					pw.print(data);
