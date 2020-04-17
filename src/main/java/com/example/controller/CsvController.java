@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.domain.Item;
 import com.example.service.ShowListService;
 
+/**
+ * CSV出力処理をするコントローラ
+ * 
+ * @author mayumiono
+ *
+ */
 @Controller
 @RequestMapping("/download")
 public class CsvController {
@@ -23,6 +29,11 @@ public class CsvController {
 	@Autowired
 	private ShowListService showListService;
 
+	/**
+	 * クライアントからのリクエストに基づきcsvを出力する.
+	 * 
+	 * @param response クライアントからのリクエスト
+	 */
 	@RequestMapping("/all-items")
 	public void csvdownload(HttpServletResponse response) {
 		LocalDateTime now = LocalDateTime.now();

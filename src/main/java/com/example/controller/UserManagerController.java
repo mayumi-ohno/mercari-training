@@ -16,6 +16,12 @@ import com.example.form.AddUserForm;
 import com.example.form.EditUserForm;
 import com.example.service.ShowAndEditUserService;
 
+/**
+ * ユーザー情報管理をするコントローラ.
+ * 
+ * @author mayumiono
+ *
+ */
 @Controller
 @RequestMapping("/user")
 public class UserManagerController {
