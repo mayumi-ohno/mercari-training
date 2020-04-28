@@ -3,13 +3,14 @@ package com.example.service;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.domain.LoginUser;
@@ -23,14 +24,12 @@ import com.example.repository.UserRepository;
  *
  */
 @Service
-public class MercariDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@SuppressWarnings("unused")
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	
+	private static final Logger logger = LoggerFactory.getLogger( UserDetailsServiceImpl.class);
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -50,6 +49,8 @@ public class MercariDetailsService implements UserDetailsService {
 		} else {
 			authorityList.add(new SimpleGrantedAuthority("ROLE_USER")); // ユーザ権限付与
 		}
+		
+		logger.info("【ログイン認証】email:" + user.getEmail() + " | pass:" + user.getPassword());
 
 		return new LoginUser(user, authorityList);
 	}

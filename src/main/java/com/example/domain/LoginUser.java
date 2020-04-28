@@ -2,6 +2,8 @@ package com.example.domain;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -16,6 +18,8 @@ public class LoginUser extends org.springframework.security.core.userdetails.Use
 	/** ログイン情報 */
 	private final User user;
 
+	private static final Logger logger = LoggerFactory.getLogger(LoginUser.class);
+
 	/**
 	 * 通常の管理者情報に加え、認可用ロールを設定する.
 	 * 
@@ -26,6 +30,7 @@ public class LoginUser extends org.springframework.security.core.userdetails.Use
 		// スーパークラスのユーザーID、パスワードに値をセットする
 		// 実際の認証はスーパークラスのユーザーID、パスワードで行われる
 		super(user.getEmail(), user.getPassword(), authorityList);
+		logger.info("【ログインフォーム】email:" + user.getEmail() + " | pass:" + user.getPassword());
 		this.user = user;
 	}
 
