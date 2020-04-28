@@ -8,6 +8,4 @@ spring:
     username: root
     password: rootroot
 
-#    
-#    jmx:
-#      enabled: false
+
