@@ -30,7 +30,7 @@ public class LoginUser extends org.springframework.security.core.userdetails.Use
 		// スーパークラスのユーザーID、パスワードに値をセットする
 		// 実際の認証はスーパークラスのユーザーID、パスワードで行われる
 		super(user.getEmail(), user.getPassword(), authorityList);
-		logger.info("【ログインフォーム】email:" + user.getEmail() + " | pass:" + user.getPassword());
+		logger.info("【ログイン】email:" + user.getEmail() );
 		this.user = user;
 	}
 

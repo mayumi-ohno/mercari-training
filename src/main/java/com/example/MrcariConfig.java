@@ -60,8 +60,7 @@ public class MrcariConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().mvcMatchers("/", "/login-error", "/register", "/register/**").permitAll() // ログイン前にアクセス可とするパス群
 				.anyRequest().authenticated(); // 上記以外のパスは、ログイン以前のアクセス不可とする
 		// LOGIN
-		http.csrf().disable() // CSRF対策無効化
-				.formLogin().loginPage("/") // ログイン画面を表示するパス
+		http.formLogin().loginPage("/") // ログイン画面を表示するパス
 				.loginProcessingUrl("/login") // ログイン可否判定するパス（HTMLの入力フォームでth:action()内に指定）
 				.failureUrl("/login-error") // ログイン失敗時に遷移させるパス
 				.defaultSuccessUrl("/items", true) // ログイン成功時に遷移させるパス

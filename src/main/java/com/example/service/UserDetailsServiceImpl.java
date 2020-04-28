@@ -3,8 +3,6 @@ package com.example.service;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,8 +27,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	private static final Logger logger = LoggerFactory.getLogger( UserDetailsServiceImpl.class);
-
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -50,8 +46,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			authorityList.add(new SimpleGrantedAuthority("ROLE_USER")); // ユーザ権限付与
 		}
 		
-		logger.info("【ログイン認証】email:" + user.getEmail() + " | pass:" + user.getPassword());
-
 		return new LoginUser(user, authorityList);
 	}
 
